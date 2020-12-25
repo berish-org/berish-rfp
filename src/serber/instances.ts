@@ -1,0 +1,29 @@
+import { Serber, plugins } from '@berish/serber';
+import { bufferToBufferPrintPlugin } from './bufferToBufferPrintPlugin/plugin';
+import { classInstanceToClassPrintPlugin } from './classInstanceToClassPrintPlugin/plugin';
+import { functionToFunctionPrintPlugin } from './functionToFunctionPrintPlugin/plugin';
+import { errorToErrorPrintPlugin } from './errorToErrorPrintPlugin/plugin';
+
+export type InternalPluginsType = typeof internalPlugins;
+
+export const internalPlugins = {
+  bufferToBufferPrintPlugin,
+  classInstanceToClassPrintPlugin,
+  functionToFunctionPrintPlugin,
+  errorToErrorPrintPlugin,
+};
+
+export const serberWithPlugins = new Serber()
+  .addPlugin(plugins.undefinedPlugin)
+  .addPlugin(plugins.nullPlugin)
+  .addPlugin(plugins.boolPlugin)
+  .addPlugin(plugins.numberPlugin)
+  .addPlugin(plugins.stringPlugin)
+  .addPlugin(plugins.datePlugin)
+  .addPlugin(plugins.regExpPlugin)
+  .addPlugin(plugins.arrayPlugin)
+  .addPlugin(bufferToBufferPrintPlugin)
+  .addPlugin(classInstanceToClassPrintPlugin)
+  .addPlugin(functionToFunctionPrintPlugin)
+  .addPlugin(errorToErrorPrintPlugin)
+  .addPlugin(plugins.loopObjectPlugin);
