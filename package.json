@@ -34,7 +34,8 @@
     "package"
   ],
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test:a": "jest --config jestconfig.json",
+    "test": "echo test",
     "test:dev": "jest --config jestconfig.json --watch --verbose=false",
     "build": "tsc -p .",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",

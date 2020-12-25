@@ -3,6 +3,7 @@ import { IRfpRequest } from '../../peer';
 import { magicalDictionary } from '../../constants';
 import { IFunction } from './plugin';
 
+// tslint:disable-next-line: no-var-requires
 const fnArgs = require('function-arguments');
 
 export const OriginalFuncSymbol = Symbol('originalFunc');
