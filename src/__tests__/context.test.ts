@@ -24,17 +24,17 @@ export async function prepareIO() {
   httpServer = http.createServer().listen();
   httpServerAddress = httpServer.address() as AddressInfo;
   socketServer = SocketIO(httpServer);
-  socketServer.on('connection', socket => {
+  socketServer.on('connection', (socket) => {
     socketServerPeer = socket;
     socketServerTransport = createTransportServer(socket);
   });
   socketServerAddress = `http://127.0.0.1:${httpServerAddress.port}`;
 
   socketClientPeer = SocketIOClient.connect(socketServerAddress, { transports: ['websocket'] });
-  await new Promise(resolve =>
+  await new Promise((resolve) =>
     socketClientPeer.on('connect', () => {
       resolve();
-    })
+    }),
   );
 
   const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
@@ -56,7 +56,7 @@ export async function prepareIO() {
 }
 
 describe('привязка контекста', () => {
-  test('Получение аргументов функции', done => {
+  test('Получение аргументов функции', (done) => {
     expect(getNamesArguments(null)).toEqual([]);
 
     function test(a: number, b: number) {
@@ -72,7 +72,7 @@ describe('привязка контекста', () => {
     done();
   });
 
-  test('задать имя', done => {
+  test('задать имя', (done) => {
     const newTest = setName(test1, 'myBro');
     expect(test1.name).toBe('test1');
     expect(newTest.name).toBe('myBro');
@@ -82,7 +82,7 @@ describe('привязка контекста', () => {
     done();
   });
 
-  test('получение request в функции отпечатка', async done => {
+  test('получение request в функции отпечатка', async (done) => {
     const io = await prepareIO();
     io.socketClientRfpPeer.setSerberLevel('production');
     io.socketServerRfpPeer.setSerberLevel('production');
@@ -109,7 +109,7 @@ describe('привязка контекста', () => {
     done();
   });
 
-  test('задать контекст', async done => {
+  test('задать контекст', async (done) => {
     const io = await prepareIO();
     io.socketClientRfpPeer.setSerberLevel('production');
     io.socketServerRfpPeer.setSerberLevel('production');

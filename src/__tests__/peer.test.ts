@@ -16,18 +16,18 @@ let socketClientPeer: SocketIOClient.Socket = null;
 let socketClientTransport: Transport<SocketIOClient.Socket> = null;
 let socketServerTransport: Transport<SocketIO.Socket> = null;
 
-beforeAll(done => {
+beforeAll((done) => {
   httpServer = http.createServer().listen();
   httpServerAddress = httpServer.address() as AddressInfo;
   socketServer = SocketIO(httpServer);
-  socketServer.on('connection', socket => {
+  socketServer.on('connection', (socket) => {
     socketServerTransport = createTransportServer(socket);
   });
   socketServerAddress = `http://127.0.0.1:${httpServerAddress.port}`;
   done();
 });
 
-beforeEach(done => {
+beforeEach((done) => {
   socketClientPeer = SocketIOClient.connect(socketServerAddress, { transports: ['websocket'] });
   socketClientPeer.on('connect', () => {
     socketClientTransport = createTransportClient(socketClientPeer);
@@ -35,21 +35,21 @@ beforeEach(done => {
   });
 });
 
-afterEach(done => {
+afterEach((done) => {
   if (socketClientPeer.connected) {
     socketClientPeer.disconnect();
   }
   done();
 });
 
-afterAll(done => {
+afterAll((done) => {
   socketServer.close();
   httpServer.close();
   done();
 });
 
 describe('тестирование пира', () => {
-  test('пир должен открываться и закрываться', done => {
+  test('пир должен открываться и закрываться', (done) => {
     const socketServerRfpPeer = new RfpPeer();
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     expect(socketServerRfpPeer.isConnected).toBe(false);
@@ -66,7 +66,7 @@ describe('тестирование пира', () => {
 
     done();
   });
-  test('получение данных', done => {
+  test('получение данных', (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     socketServerRfpPeer.connect();
@@ -85,7 +85,7 @@ describe('тестирование пира', () => {
     socketClientRfpPeer.send({ body: 'hello world', path: 'hey' });
   });
 
-  test('send на несуществующий путь', async done => {
+  test('send на несуществующий путь', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -99,7 +99,7 @@ describe('тестирование пира', () => {
     }
   });
 
-  test('ответ на получение данных по подписке на chunk', async done => {
+  test('ответ на получение данных по подписке на chunk', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     socketServerRfpPeer.connect();
@@ -120,7 +120,7 @@ describe('тестирование пира', () => {
     socketClientRfpPeer.send({ body: 'hello world', path: 'hey' });
   });
 
-  test('ответ на получение данных по подписке на promise', async done => {
+  test('ответ на получение данных по подписке на promise', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     socketServerRfpPeer.connect();
@@ -130,7 +130,7 @@ describe('тестирование пира', () => {
       return 'myexc';
     });
 
-    socketClientRfpPeer.send({ body: 'hello world', path: 'hey' }).then(replyChunk => {
+    socketClientRfpPeer.send({ body: 'hello world', path: 'hey' }).then((replyChunk) => {
       expect(replyChunk).toBeDefined();
       expect(replyChunk.replyId).toEqual(replyChunk.replyChunk.chunkId);
       expect(replyChunk.status).toBe('resolve');
@@ -143,7 +143,7 @@ describe('тестирование пира', () => {
 });
 
 describe('тестирование передачи отпечатков', () => {
-  test('вложенность первого уровня', async done => {
+  test('вложенность первого уровня', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -163,7 +163,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('вложенность второго уровня (объект)', async done => {
+  test('вложенность второго уровня (объект)', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -191,7 +191,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('эмуляция бэкенда', async done => {
+  test('эмуляция бэкенда', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -246,7 +246,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('вызов себя через другого клиента', async done => {
+  test('вызов себя через другого клиента', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -266,7 +266,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('возврат функции, которая возвращает функцию', async done => {
+  test('возврат функции, которая возвращает функцию', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -293,7 +293,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('возврат функции, которая привязана к классу', async done => {
+  test('возврат функции, которая привязана к классу', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -326,7 +326,7 @@ describe('тестирование передачи отпечатков', () =>
     done();
   });
 
-  test('возврат класса с функциями', async done => {
+  test('возврат класса с функциями', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -337,13 +337,13 @@ describe('тестирование передачи отпечатков', () =>
       ];
 
       public async where(func: (m) => boolean | Promise<boolean>) {
-        const results = await Promise.all(this.array.map(async m => await func(m)));
+        const results = await Promise.all(this.array.map(async (m) => await func(m)));
         this.array = this.array.filter((m, i) => results[i]);
         return this;
       }
     }
 
-    socketServerRfpPeer.receive('hey', function(req) {
+    socketServerRfpPeer.receive('hey', function (req) {
       return new Data();
     });
 
@@ -352,7 +352,7 @@ describe('тестирование передачи отпечатков', () =>
     });
     const linq = response.body as Data;
 
-    const item = (await linq.where(async m => (m.title as string).toUpperCase() === 'WATSON')).array[0];
+    const item = (await linq.where(async (m) => (m.title as string).toUpperCase() === 'WATSON')).array[0];
     expect(item).toEqual({ id: 2, title: 'watson' });
 
     done();
@@ -360,7 +360,7 @@ describe('тестирование передачи отпечатков', () =>
 });
 
 describe('middleware', () => {
-  test('вызов и передача middleware по цепочке', async done => {
+  test('вызов и передача middleware по цепочке', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -378,7 +378,7 @@ describe('middleware', () => {
     done();
   });
 
-  test('пробная проверка на авторизацию', async done => {
+  test('пробная проверка на авторизацию', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
 
@@ -447,7 +447,7 @@ describe('middleware', () => {
 });
 
 describe('вызов ошибок', () => {
-  test('throw string', async done => {
+  test('throw string', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     const hey = 'hey';
@@ -463,7 +463,7 @@ describe('вызов ошибок', () => {
     }
     done();
   });
-  test('throw new Error()', async done => {
+  test('throw new Error()', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     const hey = 'hey';
@@ -479,7 +479,7 @@ describe('вызов ошибок', () => {
     }
     done();
   });
-  test('throw in libs', async done => {
+  test('throw in libs', async (done) => {
     const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport);
     const socketClientRfpPeer = new RfpPeer().setTransport(socketClientTransport);
     const hey = 'hey';

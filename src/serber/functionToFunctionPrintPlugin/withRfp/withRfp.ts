@@ -16,11 +16,11 @@ export function withRfp<Result>(callback: WithRfpInput<Result>): IWithRfp<Result
   const withRfpFunction: IWithRfp<Result> = (request, prevValue) => callback(request, prevValue);
   withRfpFunction[SYMBOL_WITH_RFP] = true;
   withRfpFunction.withDecorator = withDecorator;
-  withRfpFunction.withRfp = newCallback =>
+  withRfpFunction.withRfp = (newCallback) =>
     withRfp((request, prevValue) => {
       const result = callback(request, prevValue);
       if (result instanceof Promise) {
-        return result.then(result => newCallback(request, result));
+        return result.then((result) => newCallback(request, result));
       }
       return newCallback(request, result);
     }) as any;

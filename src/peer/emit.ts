@@ -9,9 +9,7 @@ import { generateError, ErrorTypeEnum } from '../errors';
 
 export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
   const incomeChunk = serberDeserialize(peer, incomeRawChunk);
-  peer
-    .getLogger()('peer')('emit')
-    .info(incomeChunk);
+  peer.getLogger()('peer')('emit').info(incomeChunk);
   const result = await emitListeners(peer, incomeChunk);
   if (!result) {
     await sendError(peer, incomeChunk, generateError(ErrorTypeEnum.PATH_NOT_FOUND));
@@ -26,7 +24,7 @@ async function emitListeners(peer: RfpPeer, incomeChunk: IRfpChunk<any>) {
   for (const listener of listeners) {
     try {
       const request: IRfpRequest = { chunk: { ...incomeChunk }, peer };
-      const result = await nextPromise(next => listener(request, next));
+      const result = await nextPromise((next) => listener(request, next));
       if (result === SYMBOL_NEXT_STEP) continue;
       else {
         await sendResponse(peer, incomeChunk, result);

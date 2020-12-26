@@ -14,8 +14,6 @@ export async function sendResponse(peer: RfpPeer, incomeChunk: IRfpChunk<any>, d
       isForce: peer.hasBlockers && incomeChunk.isBlocker,
     };
     await send(peer, outcomeChunk, incomeChunk.path);
-    peer
-      .getLogger()('peer')('sendResponse')
-      .info(data);
+    peer.getLogger()('peer')('sendResponse').info(data);
   }
 }

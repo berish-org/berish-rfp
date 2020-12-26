@@ -48,10 +48,10 @@ export const functionToFunctionPrintPlugin: ISerberPlugin<
   IFunctionPrint,
   IFunctionToFunctionPrintPluginOptions
 > = {
-  isForSerialize: obj => getType(obj) === 'function',
-  isForDeserialize: obj => getType(obj) === 'printFunction',
-  isAlreadySerialized: obj => functionToFunctionPrintPlugin.isForDeserialize(obj as IFunctionPrint),
-  isAlreadyDeserialized: obj => functionToFunctionPrintPlugin.isForSerialize(obj as IFunction),
+  isForSerialize: (obj) => getType(obj) === 'function',
+  isForDeserialize: (obj) => getType(obj) === 'printFunction',
+  isAlreadySerialized: (obj) => functionToFunctionPrintPlugin.isForDeserialize(obj as IFunctionPrint),
+  isAlreadyDeserialized: (obj) => functionToFunctionPrintPlugin.isForSerialize(obj as IFunction),
 
   serialize: (obj, options) => {
     const replyPath = options[SYMBOL_SERBER_CHUNK_REPLY_PATH];
@@ -82,7 +82,7 @@ export const functionToFunctionPrintPlugin: ISerberPlugin<
     };
     Object.defineProperty(withSend, 'name', { value: print.name });
     Object.defineProperty(withSend, 'toString', {
-      value: function() {
+      value: function () {
         return `function ${print.name || ''}(${print.args.join(',')}) { [rfp code] }`;
       },
     });

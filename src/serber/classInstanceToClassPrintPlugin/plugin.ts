@@ -49,8 +49,8 @@ export const classInstanceToClassPrintPlugin: ISerberPlugin<
     const out: { [key: string]: any } = {};
 
     const classes = LINQ.from(names)
-      .select(m => registrator.getClassesByClassName(m))
-      .selectMany(m => m)
+      .select((m) => registrator.getClassesByClassName(m))
+      .selectMany((m) => m)
       .toArray();
 
     const mainClass = classes[0];

@@ -6,7 +6,7 @@ export function listen<Data extends any = any>(peer: RfpPeer, path: string, list
   peer.listeners[path].push(listener);
   return () => {
     peer.listeners[path] = peer.listeners[path] || [];
-    peer.listeners[path] = peer.listeners[path].filter(m => m !== listener);
+    peer.listeners[path] = peer.listeners[path].filter((m) => m !== listener);
     if (peer.listeners[path].length <= 0) delete peer.listeners[path];
   };
 }

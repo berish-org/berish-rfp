@@ -17,7 +17,7 @@ async function createServer() {
   httpServer = http.createServer().listen();
   httpServerAddress = httpServer.address() as AddressInfo;
   socketServer = SocketIO(httpServer);
-  socketServer.on('connection', socket => {
+  socketServer.on('connection', (socket) => {
     const peer = new RfpPeer().setTransport(createTransportServer(socket)).setSerberLevel('raw');
     socketServerRfpPeer.push(peer);
   });
@@ -37,10 +37,10 @@ async function createClient(socketServerAddress: string) {
   let socketClientPeer: SocketIOClient.Socket = null;
 
   socketClientPeer = SocketIOClient.connect(socketServerAddress, { transports: ['websocket'] });
-  await new Promise(resolve =>
+  await new Promise((resolve) =>
     socketClientPeer.on('connect', () => {
       resolve();
-    })
+    }),
   );
   const socketClientRfpPeer = new RfpPeer().setTransport(createTransportClient(socketClientPeer)).setSerberLevel('raw');
 
@@ -61,7 +61,7 @@ describe('проверка pull', () => {
     expect(pull).toBeDefined();
   });
 
-  test('добавление пиров для сервер', async done => {
+  test('добавление пиров для сервер', async (done) => {
     const server = await createServer();
     await createClient(server.socketServerAddress);
     await createClient(server.socketServerAddress);

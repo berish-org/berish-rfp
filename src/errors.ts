@@ -19,7 +19,7 @@ export const errorLabels: [ErrorTypeEnum, string][] = [
 export function generateError(type: ErrorTypeEnum) {
   type = type || ErrorTypeEnum.UNKNOWN_ERROR;
   const strType = ErrorTypeEnum[type];
-  const messageType = errorLabels.filter(m => m[0] === type)[0];
+  const messageType = errorLabels.filter((m) => m[0] === type)[0];
   const err = new Error();
   err.name = strType;
   err.message = `RFP ERROR: ${strType}. ${messageType && messageType[1]}`;

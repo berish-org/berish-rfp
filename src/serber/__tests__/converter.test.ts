@@ -20,17 +20,17 @@ export async function prepareIO() {
   httpServer = http.createServer().listen();
   httpServerAddress = httpServer.address() as AddressInfo;
   socketServer = SocketIO(httpServer);
-  socketServer.on('connection', socket => {
+  socketServer.on('connection', (socket) => {
     socketServerPeer = socket;
     socketServerTransport = createTransportServer(socket);
   });
   socketServerAddress = `http://127.0.0.1:${httpServerAddress.port}`;
 
   socketClientPeer = SocketIOClient.connect(socketServerAddress, { transports: ['websocket'] });
-  await new Promise(resolve =>
+  await new Promise((resolve) =>
     socketClientPeer.on('connect', () => {
       resolve();
-    })
+    }),
   );
 
   const socketServerRfpPeer = new RfpPeer().setTransport(socketServerTransport).setSerberLevel('raw');
@@ -52,7 +52,7 @@ export async function prepareIO() {
 }
 
 describe('проверка преобразований функций и отпечатков функций', () => {
-  test('преобразование функции в отпечаток (function)', done => {
+  test('преобразование функции в отпечаток (function)', (done) => {
     function test(a: number, b: number) {
       return a + b;
     }
@@ -65,7 +65,7 @@ describe('проверка преобразований функций и отп
     expect(print.printId).toBeDefined();
     done();
   });
-  test('преобразование функции в отпечаток (() => {})', done => {
+  test('преобразование функции в отпечаток (() => {})', (done) => {
     const test = (a: number, b: number) => a + b;
     const print = converter.getPrintFunction(test);
     expect(print).toBeDefined();
@@ -76,14 +76,14 @@ describe('проверка преобразований функций и отп
     expect(print.printId).toBeDefined();
     done();
   });
-  test('преобразование функции в отпечаток ((...args) => {})', done => {
+  test('преобразование функции в отпечаток ((...args) => {})', (done) => {
     const test = (...params) => params[0] + params[1];
     const print = converter.getPrintFunction(test);
     expect(print).toBeDefined();
     // expect(print.args[0]).toBe('...params');
     done();
   });
-  test('преобразование отпечатка функции в (function)', done => {
+  test('преобразование отпечатка функции в (function)', (done) => {
     function test(a: number, b: number) {
       return a + b;
     }
@@ -93,8 +93,8 @@ describe('проверка преобразований функций и отп
     expect(func).toBeDefined();
     done();
   });
-  test('удаленный вызов функции по отпечатку (мгновенная прослушка)', done => {
-    prepareIO().then(async io => {
+  test('удаленный вызов функции по отпечатку (мгновенная прослушка)', (done) => {
+    prepareIO().then(async (io) => {
       function sum(a: number, b: number) {
         return a + b;
       }
@@ -116,8 +116,8 @@ describe('проверка преобразований функций и отп
       done();
     });
   });
-  test('удаленный вызов функции по отпечатку (отложенная прослушка)', done => {
-    prepareIO().then(async io => {
+  test('удаленный вызов функции по отпечатку (отложенная прослушка)', (done) => {
+    prepareIO().then(async (io) => {
       function sum(a: number, b: number) {
         return a + b;
       }

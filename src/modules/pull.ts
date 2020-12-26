@@ -14,6 +14,6 @@ export class RfpPull {
   }
 
   public unregister(peer: RfpPeer) {
-    if (this.peers.indexOf(peer) !== -1) this._peers = this.peers.filter(m => m !== peer);
+    if (this.peers.indexOf(peer) !== -1) this._peers = this.peers.filter((m) => m !== peer);
   }
 }

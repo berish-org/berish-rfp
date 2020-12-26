@@ -6,7 +6,7 @@ export function middleware(peer: RfpPeer, listener: RfpReceive) {
   peer.listeners[SYMBOL_MIDDLEWARE_LISTENERS].push(listener);
   return () => {
     peer.listeners[SYMBOL_MIDDLEWARE_LISTENERS] = peer.listeners[SYMBOL_MIDDLEWARE_LISTENERS].filter(
-      m => m !== listener
+      (m) => m !== listener,
     );
   };
 }

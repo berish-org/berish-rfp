@@ -13,7 +13,7 @@ export function serberSerialize(
   peer: RfpPeer,
   outcomeChunk: IRfpChunk<any>,
   deferredList: IDeferredList,
-  replyPath?: string
+  replyPath?: string,
 ) {
   const { body, aside, ...chunkMeta } = outcomeChunk;
   const preChunkBody = peer.serberInstance.serialize(body, {

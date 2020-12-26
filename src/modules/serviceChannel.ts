@@ -14,7 +14,7 @@ export interface IRfpServiceRequest<T> extends IRfpRequest {
 
 export type RfpServiceMiddlewareReceive<StoreState = any> = (
   request: IRfpServiceRequest<StoreState>,
-  next: IRfpNextResponse
+  next: IRfpNextResponse,
 ) => any;
 
 export class ServiceChannel {

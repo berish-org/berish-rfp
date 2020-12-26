@@ -8,7 +8,7 @@ export function checkConnection(peer: RfpPeer) {
     unreceive = null;
     return serviceData;
   });
-  return new Promise<boolean>(async resolve => {
+  return new Promise<boolean>(async (resolve) => {
     const { data: result } = await peer.serviceChannel.send<string, string>('connection', generateConnectionCode, {
       isBlocker: true,
     });

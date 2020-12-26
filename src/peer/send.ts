@@ -9,7 +9,7 @@ import { wait } from './wait';
 export async function send<Resolve = any, Data = any>(
   peer: RfpPeer,
   outcomeChunk: IRfpChunk<Data>,
-  replyPath?: string
+  replyPath?: string,
 ) {
   outcomeChunk.chunkId = outcomeChunk.chunkId || guid.guid();
   outcomeChunk.aside = outcomeChunk.aside || ({} as any);
@@ -32,24 +32,18 @@ export async function send<Resolve = any, Data = any>(
   deferredReceiveStart(deferredList);
 
   peer.transport.send(peer, outcomeRawChunk);
-  peer
-    .getLogger()('peer')('send')
-    .info(outcomeRawChunk);
+  peer.getLogger()('peer')('send').info(outcomeRawChunk);
 
   if (outcomeChunk.notWaiting) {
-    peer
-      .getLogger()('peer')('send')('notWait')
-      .info(outcomeRawChunk.chunkId);
+    peer.getLogger()('peer')('send')('notWait').info(outcomeRawChunk.chunkId);
     return void 0;
   }
 
-  peer
-    .getLogger()('peer')('send')('wait')
-    .info(outcomeRawChunk);
+  peer.getLogger()('peer')('send')('wait').info(outcomeRawChunk);
 
   const result = await wait<Resolve, IRfpChunk<Data>>(peer, outcomeChunk);
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
-    peer.blockersChunks = peer.blockersChunks.filter(m => m !== outcomeChunk);
+    peer.blockersChunks = peer.blockersChunks.filter((m) => m !== outcomeChunk);
     peer.emitter.emit('unblock', outcomeChunk);
     if (!peer.hasBlockers) peer.emitter.emit('unblockAll');
   }

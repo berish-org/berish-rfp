@@ -14,7 +14,7 @@ function createServer(onConnect: (peer: RfpPeer, socket: SocketIO.Socket) => any
   httpServer = http.createServer().listen();
   httpServerAddress = httpServer.address() as AddressInfo;
   server = SocketIO(httpServer);
-  server.on('connection', socket => {
+  server.on('connection', (socket) => {
     const peer = new RfpPeer().setTransport(createTransportServer(socket));
     onConnect(peer, socket);
   });
@@ -33,10 +33,10 @@ async function createClient(socketServerAddress: string) {
   let socket: SocketIOClient.Socket = null;
 
   socket = SocketIOClient.connect(socketServerAddress, { transports: ['websocket'] });
-  await new Promise(resolve =>
+  await new Promise((resolve) =>
     socket.on('connect', () => {
       resolve();
-    })
+    }),
   );
   const peer = new RfpPeer().setTransport(createTransportClient(socket)).setSerberLevel('raw');
 
@@ -52,12 +52,12 @@ async function createClient(socketServerAddress: string) {
 }
 
 describe('Тестирование dev manager', () => {
-  test('подключение', async done => {
+  test('подключение', async (done) => {
     const onConnect = (peer: RfpPeer) => {
       const { proxy } = peer;
       proxy.server.start('123456');
 
-      peer.receive('hey', req => {
+      peer.receive('hey', (req) => {
         return 'hey ' + req.chunk.body;
       });
     };
@@ -68,7 +68,7 @@ describe('Тестирование dev manager', () => {
     expect(res1).toBe('hey Ravil');
 
     const devServer = await createClient(server.address);
-    devServer.peer.receive('hey', req => {
+    devServer.peer.receive('hey', (req) => {
       return 'bye ' + req.chunk.body;
     });
     await devServer.peer.proxy.client.connect('123456');

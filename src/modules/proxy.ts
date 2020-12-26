@@ -30,9 +30,7 @@ class ProxyServer {
     this._phrase = pharse;
     return this._serviceChannel.receive<string>(serviceCommands.connect, async ({ chunk, peer, serviceData }) => {
       if (this._phrase !== serviceData) throw new Error('Phrase is not correct');
-      peer
-        .getLogger()(serviceModuleName)('start')
-        .info(serviceData);
+      peer.getLogger()(serviceModuleName)('start').info(serviceData);
       // await this.reconnectAll(peer.pull);
       return true;
     });
@@ -40,8 +38,8 @@ class ProxyServer {
 
   public async reconnectAll(pull: RfpPull) {
     if (!pull) throw new Error('peer.pull is not defined. Use RfpPull on Server');
-    const clients = pull.peers.filter(m => !(m.publicStore && m.publicStore['isDevServer'] === true));
-    await Promise.all(clients.map(m => m.send({ path: 'reconnect force', notWaiting: true })));
+    const clients = pull.peers.filter((m) => !(m.publicStore && m.publicStore['isDevServer'] === true));
+    await Promise.all(clients.map((m) => m.send({ path: 'reconnect force', notWaiting: true })));
   }
 }
 

@@ -7,11 +7,11 @@ export interface IErrorPrint extends IPrint<PrintTypeEnum.printError> {
 }
 
 export const errorToErrorPrintPlugin: ISerberPlugin<Error, IErrorPrint, {}> = {
-  isForSerialize: obj => obj instanceof Error,
-  isForDeserialize: obj => getType(obj) === 'printError',
-  isAlreadySerialized: obj => errorToErrorPrintPlugin.isForDeserialize(obj as IErrorPrint),
-  isAlreadyDeserialized: obj => errorToErrorPrintPlugin.isForSerialize(obj as Error),
-  serialize: obj => {
+  isForSerialize: (obj) => obj instanceof Error,
+  isForDeserialize: (obj) => getType(obj) === 'printError',
+  isAlreadySerialized: (obj) => errorToErrorPrintPlugin.isForDeserialize(obj as IErrorPrint),
+  isAlreadyDeserialized: (obj) => errorToErrorPrintPlugin.isForSerialize(obj as Error),
+  serialize: (obj) => {
     const print: IErrorPrint = {
       ...createPrint(PrintTypeEnum.printError),
       name: obj.name,
@@ -19,7 +19,7 @@ export const errorToErrorPrintPlugin: ISerberPlugin<Error, IErrorPrint, {}> = {
     };
     return print;
   },
-  deserialize: obj => {
+  deserialize: (obj) => {
     const err = new Error(obj.message);
     err.name = obj.name;
     err.message = obj.message;
