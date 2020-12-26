@@ -69,7 +69,6 @@
     "berish-guid": "^2.0.0",
     "cbor": "^5.1.0",
     "cbor-js": "^0.1.0",
-    "colors": "^1.4.0",
     "function-arguments": "^1.0.9"
   }
 }

@@ -1,5 +1,3 @@
-import * as colors from 'colors/safe';
-
 interface ILogger {
   (moduleName: string): ILogger;
   info: (...args: any[]) => void;
@@ -17,11 +15,11 @@ export function getLogger(moduleName: string) {
       return temp;
     };
     logger.info = (...args: any[]) =>
-      logger.disable || console.info(colors.green(currentModuleNames.map((m) => `[${m}]`).join('')), ...args);
+      logger.disable || console.info(currentModuleNames.map((m) => `[${m}]`).join(''), ...args);
     logger.warn = (...args: any[]) =>
-      logger.disable || console.warn(colors.yellow(currentModuleNames.map((m) => `[${m}]`).join('')), ...args);
+      logger.disable || console.warn(currentModuleNames.map((m) => `[${m}]`).join(''), ...args);
     logger.error = (...args: any[]) =>
-      logger.disable || console.error(colors.red(currentModuleNames.map((m) => `[${m}]`).join('')), ...args);
+      logger.disable || console.error(currentModuleNames.map((m) => `[${m}]`).join(''), ...args);
     if (!moduleName) logger.disable = true;
     return logger as ILogger;
   };
