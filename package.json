@@ -65,7 +65,7 @@
     "@berish/class": "^1.0.2",
     "@berish/pathof": "^1.1.0",
     "@berish/serber": "^1.3.0",
-    "@berish/stateful": "^0.1.0",
+    "@berish/stateful": "^0.2.0",
     "berish-guid": "^2.0.0",
     "cbor": "^5.1.0",
     "cbor-js": "^0.1.0",
