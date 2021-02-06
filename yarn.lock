@@ -296,16 +296,17 @@
     "@berish/pathof" "^1.1.0"
     "@berish/typeof" "^1.0.0"
 
-"@berish/stateful@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@berish/stateful/-/stateful-0.1.0.tgz#7c40f405708ae06184c31da6ed2ba1e00cf9e71f"
-  integrity sha512-RfvptplgOB4FtGw726XyVhSNFvyusvMFfVdlzqRQnk2eDTD7c+IbmWWdyU72dMxatCm6ds+ks6xA4FxO/LQOCA==
+"@berish/stateful@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@berish/stateful/-/stateful-0.2.1.tgz#2eecab84b971a3119f7af71fcdc0827d49d54eca"
+  integrity sha512-XbH//agYU2WGosKZqLhxjIVXWNt8sKia/TK/GXlKDty+9dMTf11HNLP+Wv57d7ub/Yo2DQ20suouWc7XD6Suqg==
   dependencies:
     "@berish/linq" "^1.1.0"
     "@berish/pathof" "^1.1.0"
     "@berish/typeof" "^1.0.0"
     berish-guid "^2.0.0"
     berish-ringle "^2.1.0"
+    lodash.debounce "^4.0.8"
 
 "@berish/typeof@^1.0.0":
   version "1.0.0"
@@ -1090,11 +1091,6 @@ color-name@~1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
-
-colors@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
-  integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
 
 combined-stream@^1.0.6, combined-stream@~1.0.6:
   version "1.0.8"
@@ -2482,6 +2478,11 @@ locate-path@^5.0.0:
   integrity sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==
   dependencies:
     p-locate "^4.1.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
 lodash.memoize@4.x:
   version "4.1.2"
