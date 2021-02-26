@@ -1,5 +1,6 @@
 import { StatefulObject, getScope } from '@berish/stateful';
-import { createStore, Transport, ServiceChannel } from '../modules';
+import { createStore, ServiceChannel } from '../modules';
+import { PeerTransport } from '../transport';
 import { Emitter, getLogger } from '../helpers';
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
 import { RfpReceive, IPeerEmitterObject, IRfpChunk } from './types';
@@ -14,7 +15,7 @@ export class RfpPeer<
   PublicStore extends {} = {},
   PrivateStore extends {} = {},
   ProtectedStore extends {} = {},
-  TransportType extends Transport<any> = Transport<any>
+  TransportType extends PeerTransport<any> = PeerTransport<any>
 > {
   private _transport: TransportType = null;
   private _transportUnsubscribeId: string = null;
@@ -89,9 +90,9 @@ export class RfpPeer<
     return this._serviceChannel;
   }
 
-  public setTransport<TransportTypeNew extends Transport<any>>(transport: TransportTypeNew) {
+  public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
     this._transport = transport as any;
-    return (this as any) as RfpPeer<PublicStore, PrivateStore, ProtectedStore, TransportTypeNew>;
+    return (this as any) as RfpPeer<PublicStore, PrivateStore, ProtectedStore, TPeerTransport>;
   }
 
   public async connect() {
