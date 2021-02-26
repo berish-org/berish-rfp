@@ -2,6 +2,7 @@ import * as cbor from 'cbor';
 import { RfpPeer, IRfpChunk } from '../peer';
 import { Emitter } from '../helpers';
 import { isBuffer } from '../serber/bufferToBufferPrintPlugin/helper';
+import { TransportNotSupportedSendError } from '../errors';
 
 export interface ITransportAdapter<T> {
   transport?: T;
@@ -46,7 +47,7 @@ export class Transport<T> {
   }
 
   async send(peer: RfpPeer, data: IRfpChunk<any>) {
-    if (!this._adapter.send) throw new Error('Transport send is not supported');
+    if (!this._adapter.send) throw new TransportNotSupportedSendError();
     const binary = data && (await cbor.encodeAsync(data));
     const encodedBinary = binary && (await this.encode(peer, binary));
     const encodedResult = this.isSupportBinary ? encodedBinary : encodedBinary && this.binaryToString(encodedBinary);

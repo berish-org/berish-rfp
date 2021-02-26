@@ -5,14 +5,14 @@ import { sendError } from './sendError';
 import { sendResponse } from './sendResponse';
 import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
 import { serberDeserialize } from './serberDeserialize';
-import { generateError, ErrorTypeEnum } from '../errors';
+import { PeerPathNotFoundError } from '../errors';
 
 export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
   const incomeChunk = serberDeserialize(peer, incomeRawChunk);
   peer.getLogger()('peer')('emit').info(incomeChunk);
   const result = await emitListeners(peer, incomeChunk);
   if (!result) {
-    await sendError(peer, incomeChunk, generateError(ErrorTypeEnum.PATH_NOT_FOUND));
+    await sendError(peer, incomeChunk, new PeerPathNotFoundError());
   }
 }
 

@@ -1,7 +1,7 @@
 import { RfpPeer } from '../peer';
 import { RfpPull } from './pull';
 import { ServiceChannel } from './serviceChannel';
-import { generateError, ErrorTypeEnum } from '../errors';
+import { ProxyConnectionDataConfusedError } from '../errors';
 
 const serviceCommands = { connect: 'connect' };
 const serviceModuleName = 'proxy';
@@ -14,7 +14,7 @@ class ProxyClient {
   }
   public async connect(phrase: string) {
     const response = await this._serviceChannel.send<string, boolean>(serviceCommands.connect, phrase);
-    if (!response.data) throw generateError(ErrorTypeEnum.PROXY_CONNECTION_DATA_CONFUSED);
+    if (!response.data) throw new ProxyConnectionDataConfusedError();
   }
 }
 

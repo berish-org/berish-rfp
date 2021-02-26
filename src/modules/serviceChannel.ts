@@ -1,6 +1,6 @@
 import { IRfpNextResponse, IRfpRequest, RfpPeer, IRfpChunkBlockForce } from '../peer';
 import { magicalDictionary } from '../constants';
-import { generateError, ErrorTypeEnum } from '../errors';
+import { ServiceChannelNameEmptyError } from '../errors';
 
 export interface IRfpServiceData<T> {
   moduleName: string;
@@ -63,8 +63,7 @@ export class ServiceChannel {
   public receive<InputData>(commandName: string, listener: RfpServiceMiddlewareReceive<InputData>) {
     return this.peer.listen<any>(magicalDictionary.serviceChannel, ({ chunk, peer }, next) => {
       const responseCommand: IRfpServiceData<InputData> = chunk.body;
-      if (!responseCommand.moduleName || !responseCommand.commandName)
-        throw generateError(ErrorTypeEnum.SERVICE_CHANNEL_NAME_EMPTY);
+      if (!responseCommand.moduleName || !responseCommand.commandName) throw new ServiceChannelNameEmptyError();
       if (responseCommand.moduleName !== this._moduleName) return next();
       if (responseCommand.commandName !== commandName) return next();
       return listener({ chunk, peer, serviceData: responseCommand.data }, next);

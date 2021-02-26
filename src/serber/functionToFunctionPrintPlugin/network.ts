@@ -1,7 +1,7 @@
 import { IFunctionPrint, IFunction } from './plugin';
 import { RfpPeer, IRfpRequest } from '../../peer';
 import { resultFromWithRfp } from './withRfp/resultFromWithRfp';
-import { generateError, ErrorTypeEnum } from '../../errors';
+import { PeerIsDisconnectedError } from '../../errors';
 
 export interface IDeferredList {
   [key: string]: () => void;
@@ -71,5 +71,5 @@ export async function executeRemoteFunction(
   if (peer.emitter.hasListeners('requestWhenDisconnected')) {
     peer.emitter.emit('requestWhenDisconnected', print);
   }
-  throw generateError(ErrorTypeEnum.RFP_DISCONNECTED);
+  throw new PeerIsDisconnectedError();
 }

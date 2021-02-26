@@ -3,7 +3,7 @@ import { RfpPeer } from './peer';
 import { disconnect } from './disconnect';
 import { checkConnection } from './checkConnection';
 import { emit } from './emit';
-import { generateError, ErrorTypeEnum } from '../errors';
+import { PeerInitialConnectionError } from '../errors';
 
 export async function connect(peer: RfpPeer, unsubscribeId: string) {
   if (peer.isConnected) {
@@ -12,7 +12,7 @@ export async function connect(peer: RfpPeer, unsubscribeId: string) {
   if (!peer.isConnected) {
     unsubscribeId = peer.transport.subscribe(peer, (data) => emit(peer, data));
     const connected = await checkConnection(peer);
-    if (!connected) throw generateError(ErrorTypeEnum.INITIAL_CONNECTION_ERROR);
+    if (!connected) throw new PeerInitialConnectionError();
     peer.getLogger()('peer').info('connected');
   }
   if (peer.publicStore) {
