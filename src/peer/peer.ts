@@ -1,7 +1,8 @@
 import { StatefulObject, getScope } from '@berish/stateful';
 import { createStore, ServiceChannel } from '../modules';
 import { PeerTransport } from '../transport';
-import { Emitter, getLogger } from '../helpers';
+import { Emitter } from '../helpers';
+import { PeerLogger, getConsoleLogger } from '../logger';
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
 import { RfpReceive, IPeerEmitterObject, IRfpChunk } from './types';
 import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
@@ -38,6 +39,11 @@ export class RfpPeer<
 
   private _serviceChannel: ServiceChannel = null;
   private _emitter: Emitter<IPeerEmitterObject> = new Emitter();
+  private _logger: PeerLogger = getConsoleLogger();
+
+  public get logger() {
+    return this._logger;
+  }
 
   public get transport() {
     return this._transport;
@@ -89,6 +95,14 @@ export class RfpPeer<
   public get serviceChannel() {
     if (!this._serviceChannel) this._serviceChannel = ServiceChannel.getServiceChannel('main').setPeer(this);
     return this._serviceChannel;
+  }
+
+  public setLogger(logger: PeerLogger) {
+    // TODO
+    // проверка, что это логгер
+    this._logger = logger;
+
+    return this;
   }
 
   public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
@@ -152,9 +166,5 @@ export class RfpPeer<
     const request = createRequest(this, outcomeChunk);
 
     return send<Resolve, Data>(request);
-  }
-
-  public getLogger() {
-    return getLogger(this._debugLog);
   }
 }

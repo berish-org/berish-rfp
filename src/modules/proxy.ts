@@ -1,5 +1,5 @@
 import { RfpPeer } from '../peer';
-import { RfpPull } from './pull';
+import { PeerPull } from './pull';
 import { ServiceChannel } from './serviceChannel';
 import { ProxyConnectionDataConfusedError } from '../errors';
 
@@ -30,14 +30,14 @@ class ProxyServer {
     this._phrase = pharse;
     return this._serviceChannel.receive<string>(serviceCommands.connect, async ({ chunk, peer, serviceData }) => {
       if (this._phrase !== serviceData) throw new Error('Phrase is not correct');
-      peer.getLogger()(serviceModuleName)('start').info(serviceData);
+      peer.logger(serviceModuleName)('start').info(serviceData);
       // await this.reconnectAll(peer.pull);
       return true;
     });
   }
 
-  public async reconnectAll(pull: RfpPull) {
-    if (!pull) throw new Error('peer.pull is not defined. Use RfpPull on Server');
+  public async reconnectAll(pull: PeerPull) {
+    if (!pull) throw new Error('peer.pull is not defined. Use PeerPull on Server');
     const clients = pull.peers.filter((m) => !(m.publicStore && m.publicStore['isDevServer'] === true));
     await Promise.all(clients.map((m) => m.send({ path: 'reconnect force', notWaiting: true })));
   }

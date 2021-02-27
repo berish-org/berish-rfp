@@ -13,7 +13,7 @@ export async function connect(peer: RfpPeer, unsubscribeId: string) {
     unsubscribeId = peer.transport.subscribe(peer, (data) => emit(peer, data));
     const connected = await checkConnection(peer);
     if (!connected) throw new PeerInitialConnectionError();
-    peer.getLogger()('peer').info('connected');
+    peer.logger('peer').info('connected');
   }
   if (peer.publicStore) {
     const scope = getScope(peer.publicStore);

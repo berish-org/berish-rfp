@@ -30,14 +30,14 @@ export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPe
   deferredReceiveStart(deferredList);
 
   peer.transport.send(peer, outcomeRawChunk);
-  peer.getLogger()('peer')('send').info(outcomeRawChunk);
+  peer.logger('peer')('send').info(outcomeRawChunk);
 
   if (outcomeChunk.notWaiting) {
-    peer.getLogger()('peer')('send')('notWait').info(outcomeRawChunk.chunkId);
+    peer.logger('peer')('send')('notWait').info(outcomeRawChunk.chunkId);
     return void 0;
   }
 
-  peer.getLogger()('peer')('send')('wait').info(outcomeRawChunk);
+  peer.logger('peer')('send')('wait').info(outcomeRawChunk);
 
   const result = await wait<Resolve, IRfpChunk<Data>>(peer, outcomeChunk);
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {

@@ -5,7 +5,7 @@ export function disconnect(peer: RfpPeer, unsubscribeId: string) {
   if (peer.isConnected) {
     peer.transport.unsubscribe(unsubscribeId);
     peer.unlistenAll();
-    peer.getLogger()('peer').info('disconnected');
+    peer.logger('peer').info('disconnected');
 
     const publicScope = getScope(peer.publicStore);
     if (publicScope && publicScope.isConnected) publicScope.disconnect();

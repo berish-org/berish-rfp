@@ -23,7 +23,7 @@ function getCommandName(cmd: StoreCommandsTypeEnum, type: StoreType) {
 export function createStore<T extends {} = {}>(peer: RfpPeer, target: T, type: StoreType) {
   const store = createStateful(target);
   const scope = getScope(store);
-  const logger = peer.getLogger()('store');
+  const logger = peer.logger('store');
 
   scope.reactionSetValueRemote = (callback) => {
     const commandName = getCommandName(StoreCommandsTypeEnum.setValue, type);
@@ -71,7 +71,7 @@ export function createStore<T extends {} = {}>(peer: RfpPeer, target: T, type: S
 
 export async function connectStore<T extends {} = {}>(store: StatefulObject<T>, type: StoreType) {
   const scope = getScope(store);
-  const logger = scope.peer.getLogger()('store');
+  const logger = scope.peer.logger('store');
   if (scope && !scope.isConnected) {
     let unrecursiveDict: [(string | number | symbol)[], any][] = [];
     let listenId = scope.listenChange(async (props, oldValue, newValue) => {

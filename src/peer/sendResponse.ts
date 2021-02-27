@@ -17,6 +17,6 @@ export async function sendResponse(request: PeerRequest<RfpPeer, any>, data: any
     };
     const outcomeRequest = createRequest(peer, outcomeChunk);
     await send(outcomeRequest, incomeChunk.path);
-    peer.getLogger()('peer')('sendResponse').info(data);
+    peer.logger('peer')('sendResponse').info(data);
   }
 }

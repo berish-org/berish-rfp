@@ -10,7 +10,7 @@ import { PeerPathNotFoundError } from '../errors';
 
 export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
   const incomeChunk = serberDeserialize(peer, incomeRawChunk);
-  peer.getLogger()('peer')('emit').info(incomeChunk);
+  peer.logger('peer')('emit').info(incomeChunk);
   const result = await emitListeners(peer, incomeChunk);
   if (!result) {
     const request = createRequest(peer, incomeChunk);
