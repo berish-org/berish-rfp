@@ -1,4 +1,4 @@
-import { IRfpChunk } from './types';
+import type { PeerChunk } from '../chunk';
 import { createRequest } from './methods';
 import { RfpPeer } from './peer';
 import { nextPromise, SYMBOL_NEXT_STEP } from '../helpers';
@@ -8,7 +8,7 @@ import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
 import { serberDeserialize } from './serberDeserialize';
 import { PeerPathNotFoundError } from '../errors';
 
-export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
+export async function emit(peer: RfpPeer, incomeRawChunk: PeerChunk<any>) {
   const incomeChunk = serberDeserialize(peer, incomeRawChunk);
   peer.logger('peer')('emit').info(incomeChunk);
   const result = await emitListeners(peer, incomeChunk);
@@ -18,7 +18,7 @@ export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
   }
 }
 
-async function emitListeners(peer: RfpPeer, incomeChunk: IRfpChunk<any>) {
+async function emitListeners(peer: RfpPeer, incomeChunk: PeerChunk<any>) {
   const { [SYMBOL_MIDDLEWARE_LISTENERS]: middlewares, [incomeChunk.path]: pathListeners } = peer.listeners;
   if (!pathListeners || pathListeners.length <= 0) return false;
 

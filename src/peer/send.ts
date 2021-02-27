@@ -1,7 +1,7 @@
 import guid from 'berish-guid';
 import { RfpPeer } from './peer';
 import { PeerRequest } from './methods';
-import { IRfpChunk } from './types';
+import type { PeerChunk } from '../chunk';
 import { DeferredReceiveList, deferredReceiveStart } from '..';
 import { serberSerialize } from './serberSerialize';
 import { waitUnblockAll } from './waitUnblockAll';
@@ -9,6 +9,7 @@ import { wait } from './wait';
 
 export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPeer, Data>, replyPath?: string) {
   const { chunk: outcomeChunk, peer } = request;
+
   outcomeChunk.chunkId = outcomeChunk.chunkId || guid.guid();
   outcomeChunk.aside = outcomeChunk.aside || ({} as any);
   outcomeChunk.status = outcomeChunk.status || 'initial';
@@ -39,7 +40,7 @@ export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPe
 
   peer.logger('peer')('send')('wait').info(outcomeRawChunk);
 
-  const result = await wait<Resolve, IRfpChunk<Data>>(peer, outcomeChunk);
+  const result = await wait<Resolve, PeerChunk<Data>>(peer, outcomeChunk);
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
     peer.blockersChunks = peer.blockersChunks.filter((m) => m !== outcomeChunk);
     peer.emitter.emit('unblock', outcomeChunk);

@@ -1,3 +1,4 @@
+import type { PeerChunk } from '../chunk';
 import { PeerDecorator, IFunctionPrint } from '../serber';
 import { PeerRequest } from './methods';
 import { RfpPeer } from './peer';
@@ -31,40 +32,10 @@ export type RfpResponseStatusType = 'resolve' | 'reject' | 'initial';
 export interface IPeerEmitterObject {
   connected: never;
   disconnected: never;
-  block: IRfpChunk<any>;
-  unblock: IRfpChunk<any>;
+  block: PeerChunk<any>;
+  unblock: PeerChunk<any>;
   unblockAll: never;
   requestWhenDisconnected: IFunctionPrint;
-}
-
-export interface IRfpChunkSend<Body> {
-  /** Показывает путь, на который направлен текущий chunk */
-  readonly path: string;
-  /** Основная информация, которую передает chunk */
-  readonly body?: Body;
-  /** Показывает, нужно ли ждать ответ на текущий chunk */
-  notWaiting?: boolean;
-}
-
-export interface IRfpChunkBlockForce {
-  /** Указывает, что текущий chunk является блокатором для следующих запросов */
-  isBlocker?: boolean;
-  /** Указывает, что текущий chunk может пройти сквозь блокированные запросы */
-  isForce?: boolean;
-}
-
-export interface IRfpChunkId {
-  /** Показывает идентификатор текущего chunk */
-  chunkId?: string;
-  /** Показывает на какой chunk указывает текущий chunk */
-  replyId?: string;
-  /** Показывает запрос выполнен со статусом resolve или reject */
-  status?: RfpResponseStatusType;
-}
-
-export interface IRfpChunk<Body> extends IRfpChunkSend<Body>, IRfpChunkId, IRfpChunkBlockForce {
-  /** Дополнительная информация, которую можно получить из chunk */
-  aside?: { [key: string]: any };
 }
 
 export type IRfpNextResponse = () => void;

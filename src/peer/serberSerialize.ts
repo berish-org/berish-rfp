@@ -8,7 +8,7 @@ import {
   DeferredReceiveList,
 } from '../serber';
 import { PeerRequest } from './methods';
-import { IRfpChunk } from './types';
+import type { PeerChunk } from '../chunk';
 import { SYMBOL_SERBER_REQUEST } from '../serber/peerDecoratorToResultPlugin';
 
 export function serberSerialize(
@@ -42,5 +42,5 @@ export function serberSerialize(
     [SYMBOL_SERBER_CHUNK_REPLY_PATH]: replyPath,
     [SYMBOL_SERBER_REQUEST]: request,
   });
-  return { body: preChunkBody, aside: preChunkAside, ...preChunkMeta } as IRfpChunk<any>;
+  return { body: preChunkBody, aside: preChunkAside, ...preChunkMeta } as PeerChunk<any>;
 }

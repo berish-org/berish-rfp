@@ -2,7 +2,8 @@ import { EventEmitter } from '@berish/emitter';
 import { TransportAdapterEmptyError, TransportNameEmptyError, TransportNotSupportedSendError } from '../errors';
 
 import type { TransportPlugin } from './transportPlugin';
-import type { RfpPeer, IRfpChunk } from '../peer';
+import type { RfpPeer } from '../peer';
+import type { PeerChunk } from '../chunk';
 import { cborBinaryEncoder } from './cborBinaryEncoder';
 import { jsonStringEncoder } from './jsonStringEncoder';
 
@@ -67,14 +68,14 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return this._plugins || [];
   }
 
-  public async send(peer: RfpPeer, data: IRfpChunk<any>) {
+  public async send(peer: RfpPeer, data: PeerChunk<any>) {
     if (!this.transportAdapter.send) throw new TransportNotSupportedSendError();
 
     const beforeSend = await this._beforeSend(peer, data);
     return this.transportAdapter.send(this.transportName, beforeSend);
   }
 
-  public subscribe(peer: RfpPeer, callback: (data: IRfpChunk<any>) => void) {
+  public subscribe(peer: RfpPeer, callback: (data: PeerChunk<any>) => void) {
     return this._emitter.cacheSubscribe<any>(
       'subscribe',
       (callback) => this.transportAdapter.subscribe(this._transportName, callback),
@@ -86,7 +87,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return this._emitter.off(eventHash);
   }
 
-  private async _beforeSend(peer: RfpPeer, data: IRfpChunk<any>) {
+  private async _beforeSend(peer: RfpPeer, data: PeerChunk<any>) {
     const beforeDataSend = data && (await this._beforeDataSend(peer, data));
     const binaryEncodeData = beforeDataSend && (await this.binaryEncoder.encode(beforeDataSend));
     const beforeTransportSend = binaryEncodeData && (await this._beforeTransportSend(peer, binaryEncodeData));
@@ -98,7 +99,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return binaryData;
   }
 
-  private async _beforeResponse(peer: RfpPeer, data: string | Buffer): Promise<IRfpChunk<any>> {
+  private async _beforeResponse(peer: RfpPeer, data: string | Buffer): Promise<PeerChunk<any>> {
     const binaryData =
       this.transportAdapter.binaryFormat === 'string'
         ? await this.stringEncoder.decode(data as string)
@@ -110,7 +111,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return beforeDataResponse;
   }
 
-  private _beforeDataSend(peer: RfpPeer, chunk: IRfpChunk<any>) {
+  private _beforeDataSend(peer: RfpPeer, chunk: PeerChunk<any>) {
     return this.plugins.reduce(async (chunkPromise, plugin) => {
       const chunk = await chunkPromise;
       const data = (plugin && plugin.beforeDataSend && (await plugin.beforeDataSend(peer, chunk))) || chunk;
@@ -127,7 +128,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     }, Promise.resolve(binaryData));
   }
 
-  private _beforeDataResponse(peer: RfpPeer, chunk: IRfpChunk<any>) {
+  private _beforeDataResponse(peer: RfpPeer, chunk: PeerChunk<any>) {
     return this.plugins.reduceRight(async (chunkPromise, plugin) => {
       const chunk = await chunkPromise;
       const data = (plugin && plugin.beforeDataResponse && (await plugin.beforeDataResponse(peer, chunk))) || chunk;

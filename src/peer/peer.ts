@@ -4,7 +4,8 @@ import { PeerTransport } from '../transport';
 import { Emitter } from '../helpers';
 import { PeerLogger, getConsoleLogger } from '../logger';
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
-import { RfpReceive, IPeerEmitterObject, IRfpChunk } from './types';
+import { RfpReceive, IPeerEmitterObject } from './types';
+import type { PeerChunk } from '../chunk';
 import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
 import { middleware } from './middleware';
 import { listen } from './listen';
@@ -28,7 +29,7 @@ export class RfpPeer<
   } = {
     [SYMBOL_MIDDLEWARE_LISTENERS]: [],
   };
-  private _blockersChunks: IRfpChunk<any>[] = null;
+  private _blockersChunks: PeerChunk<any>[] = null;
   private _debugLog: string = null;
 
   private _serberInstance: typeof serberWithPlugins = null;
@@ -62,7 +63,7 @@ export class RfpPeer<
     return this._blockersChunks;
   }
 
-  public set blockersChunks(value: IRfpChunk<any>[]) {
+  public set blockersChunks(value: PeerChunk<any>[]) {
     if (!value) this._blockersChunks = [];
     else this._blockersChunks = value;
   }
@@ -162,7 +163,7 @@ export class RfpPeer<
     return this;
   }
 
-  public async send<Resolve = any, Data = any>(outcomeChunk: IRfpChunk<Data>) {
+  public async send<Resolve = any, Data = any>(outcomeChunk: PeerChunk<Data>) {
     const request = createRequest(this, outcomeChunk);
 
     return send<Resolve, Data>(request);

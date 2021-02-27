@@ -1,4 +1,5 @@
-import { IRfpNextResponse, RfpPeer, IRfpChunkBlockForce } from '../peer';
+import { IRfpNextResponse, RfpPeer } from '../peer';
+import type { PeerChunkBlockForce } from '../chunk';
 import { PeerRequest } from '../peer/methods';
 import { magicalDictionary } from '../constants';
 import { ServiceChannelNameEmptyError } from '../errors';
@@ -45,7 +46,7 @@ export class ServiceChannel {
     return this;
   }
 
-  public async send<InputData, OutputData>(commandName: string, data?: InputData, options?: IRfpChunkBlockForce) {
+  public async send<InputData, OutputData>(commandName: string, data?: InputData, options?: PeerChunkBlockForce) {
     options = options || {};
     const commandData: IRfpServiceData<Partial<InputData>> = {
       commandName,
