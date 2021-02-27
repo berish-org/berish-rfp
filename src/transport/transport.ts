@@ -3,8 +3,8 @@ import { TransportAdapterEmptyError, TransportNameEmptyError, TransportNotSuppor
 
 import type { TransportPlugin } from './transportPlugin';
 import type { RfpPeer, IRfpChunk } from '../peer';
-import { binaryToString, stringToBinary } from '../utils';
 import { cborBinaryEncoder } from './cborBinaryEncoder';
+import { jsonStringEncoder } from './jsonStringEncoder';
 
 export interface PeerTransportAdapter<T = any> {
   transport?: T;
@@ -14,11 +14,17 @@ export interface PeerTransportAdapter<T = any> {
 
   binaryFormat: 'string' | 'binary';
   binaryEncoder?: PeerTransportBinaryEncoder;
+  stringEncoder?: PeerTransportStringEncoder;
 }
 
 export interface PeerTransportBinaryEncoder {
   encode: (data: any) => Buffer | Promise<Buffer>;
   decode: (data: Buffer) => any;
+}
+
+export interface PeerTransportStringEncoder {
+  encode: (data: Buffer) => string | Promise<string>;
+  decode: (data: string) => Buffer | Promise<Buffer>;
 }
 
 export interface PeerTransportEventEmitterMap {
@@ -47,6 +53,10 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
 
   public get binaryEncoder() {
     return this.transportAdapter.binaryEncoder || cborBinaryEncoder;
+  }
+
+  public get stringEncoder() {
+    return this.transportAdapter.stringEncoder || jsonStringEncoder;
   }
 
   public get transportName() {
@@ -81,14 +91,18 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     const binaryEncodeData = beforeDataSend && (await this.binaryEncoder.encode(beforeDataSend));
     const beforeTransportSend = binaryEncodeData && (await this._beforeTransportSend(peer, binaryEncodeData));
     const binaryData =
-      this.transportAdapter.binaryFormat === 'string' ? binaryToString(beforeTransportSend) : beforeTransportSend;
+      this.transportAdapter.binaryFormat === 'string'
+        ? await this.stringEncoder.encode(beforeTransportSend)
+        : beforeTransportSend;
 
     return binaryData;
   }
 
   private async _beforeResponse(peer: RfpPeer, data: string | Buffer): Promise<IRfpChunk<any>> {
     const binaryData =
-      this.transportAdapter.binaryFormat === 'string' ? stringToBinary(data as string) : (data as Buffer);
+      this.transportAdapter.binaryFormat === 'string'
+        ? await this.stringEncoder.decode(data as string)
+        : (data as Buffer);
     const beforeTransportResponse = binaryData && (await this._beforeTransportResponse(peer, binaryData));
     const binaryDecodeData = beforeTransportResponse && (await this.binaryEncoder.decode(beforeTransportResponse));
     const beforeDataResponse = binaryDecodeData && (await this._beforeDataResponse(peer, binaryDecodeData));

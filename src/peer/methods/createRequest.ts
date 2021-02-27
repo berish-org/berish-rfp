@@ -8,6 +8,6 @@ export interface PeerRequest<TPeer extends RfpPeer = RfpPeer, Data extends any =
 export function createRequest<TPeer extends RfpPeer = RfpPeer, Data extends any = any>(
   peer: TPeer,
   chunk: IRfpChunk<Data>,
-): PeerRequest<TPeer, Data> {
+): Readonly<PeerRequest<TPeer, Data>> {
   return Object.freeze({ peer, chunk });
 }
