@@ -17,8 +17,5 @@ export async function executeRemoteFunction(
     const result = await peer.send({ path: printId, body: executeArgs || [], aside });
     return result.body;
   }
-  if (peer.emitter.hasListeners('requestWhenDisconnected')) {
-    peer.emitter.emit('requestWhenDisconnected', print);
-  }
   throw new PeerIsDisconnectedError();
 }

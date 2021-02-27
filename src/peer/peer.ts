@@ -1,10 +1,16 @@
 import { StatefulObject, getScope } from '@berish/stateful';
 import { createStore, ServiceChannel } from '../modules';
-import { PeerTransport } from '../transport';
-import { Emitter } from '../helpers';
-import { PeerLogger, getConsoleLogger } from '../logger';
+
+import type { PeerTransport } from '../transport';
+
+import type { PeerLogger } from '../logger';
+import { getConsoleLogger } from '../logger';
+
+import type { PeerEmitter } from '../emitter';
+import { getEmitter } from '../emitter';
+
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
-import { RfpReceive, IPeerEmitterObject } from './types';
+import { RfpReceive } from './types';
 import type { PeerChunk } from '../chunk';
 import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
 import { middleware } from './middleware';
@@ -39,7 +45,7 @@ export class RfpPeer<
   private _protectedStore: StatefulObject<ProtectedStore> = null;
 
   private _serviceChannel: ServiceChannel = null;
-  private _emitter: Emitter<IPeerEmitterObject> = new Emitter();
+  private _emitter: PeerEmitter = getEmitter();
   private _logger: PeerLogger = getConsoleLogger();
 
   public get logger() {

@@ -1,7 +1,7 @@
 import { getScope } from '@berish/stateful';
 import { RfpPeer } from './peer';
 
-export function disconnect(peer: RfpPeer, unsubscribeId: string) {
+export async function disconnect(peer: RfpPeer, unsubscribeId: string) {
   if (peer.isConnected) {
     peer.transport.unsubscribe(unsubscribeId);
     peer.unlistenAll();
@@ -16,7 +16,7 @@ export function disconnect(peer: RfpPeer, unsubscribeId: string) {
     const protectedScope = getScope(peer.protectedStore);
     if (protectedScope && protectedScope.isConnected) protectedScope.disconnect();
 
-    peer.emitter.emit('disconnected');
+    await peer.emitter.emitAsync('disconnected');
     peer.emitter.offAll();
   }
 }

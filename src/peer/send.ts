@@ -23,7 +23,7 @@ export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPe
 
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
     peer.blockersChunks.push(outcomeChunk);
-    peer.emitter.emit('block', outcomeChunk);
+    await peer.emitter.emitAsync('block', outcomeChunk);
   }
 
   const deferredList: DeferredReceiveList = {};
@@ -43,8 +43,8 @@ export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPe
   const result = await wait<Resolve, PeerChunk<Data>>(peer, outcomeChunk);
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
     peer.blockersChunks = peer.blockersChunks.filter((m) => m !== outcomeChunk);
-    peer.emitter.emit('unblock', outcomeChunk);
-    if (!peer.hasBlockers) peer.emitter.emit('unblockAll');
+    await peer.emitter.emitAsync('unblock', outcomeChunk);
+    if (!peer.hasBlockers) await peer.emitter.emitAsync('unblockAll');
   }
 
   return result;

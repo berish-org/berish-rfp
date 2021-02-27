@@ -25,6 +25,6 @@ export async function connect(peer: RfpPeer, unsubscribeId: string) {
     if (scope.isConnected) scope.disconnect();
     await scope.connect();
   }
-  peer.emitter.emit('connected');
+  await peer.emitter.emitAsync('connected');
   return unsubscribeId;
 }

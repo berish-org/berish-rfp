@@ -29,15 +29,6 @@ export type FromRFP<T> = FromRFPInternal<T>;
 
 export type RfpResponseStatusType = 'resolve' | 'reject' | 'initial';
 
-export interface IPeerEmitterObject {
-  connected: never;
-  disconnected: never;
-  block: PeerChunk<any>;
-  unblock: PeerChunk<any>;
-  unblockAll: never;
-  requestWhenDisconnected: IFunctionPrint;
-}
-
 export type IRfpNextResponse = () => void;
 
 export type RfpReceive<TPeer extends RfpPeer = RfpPeer, Data extends any = any> = (
