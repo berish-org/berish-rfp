@@ -1,16 +1,14 @@
 import guid from 'berish-guid';
 import { RfpPeer } from './peer';
+import { PeerRequest } from './methods';
 import { IRfpChunk } from './types';
-import { IDeferredList, deferredReceiveStart } from '..';
+import { DeferredReceiveList, deferredReceiveStart } from '..';
 import { serberSerialize } from './serberSerialize';
 import { waitUnblockAll } from './waitUnblockAll';
 import { wait } from './wait';
 
-export async function send<Resolve = any, Data = any>(
-  peer: RfpPeer,
-  outcomeChunk: IRfpChunk<Data>,
-  replyPath?: string,
-) {
+export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPeer, Data>, replyPath?: string) {
+  const { chunk: outcomeChunk, peer } = request;
   outcomeChunk.chunkId = outcomeChunk.chunkId || guid.guid();
   outcomeChunk.aside = outcomeChunk.aside || ({} as any);
   outcomeChunk.status = outcomeChunk.status || 'initial';
@@ -27,8 +25,8 @@ export async function send<Resolve = any, Data = any>(
     peer.emitter.emit('block', outcomeChunk);
   }
 
-  const deferredList: IDeferredList = {};
-  const outcomeRawChunk = serberSerialize(peer, outcomeChunk, deferredList, replyPath);
+  const deferredList: DeferredReceiveList = {};
+  const outcomeRawChunk = serberSerialize(request, deferredList, replyPath);
   deferredReceiveStart(deferredList);
 
   peer.transport.send(peer, outcomeRawChunk);

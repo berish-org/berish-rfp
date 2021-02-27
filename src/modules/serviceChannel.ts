@@ -1,4 +1,5 @@
-import { IRfpNextResponse, IRfpRequest, RfpPeer, IRfpChunkBlockForce } from '../peer';
+import { IRfpNextResponse, RfpPeer, IRfpChunkBlockForce } from '../peer';
+import { PeerRequest } from '../peer/methods';
 import { magicalDictionary } from '../constants';
 import { ServiceChannelNameEmptyError } from '../errors';
 
@@ -8,7 +9,7 @@ export interface IRfpServiceData<T> {
   data?: T;
 }
 
-export interface IRfpServiceRequest<T> extends IRfpRequest {
+export interface IRfpServiceRequest<T> extends PeerRequest {
   serviceData?: T;
 }
 

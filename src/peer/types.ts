@@ -1,16 +1,17 @@
-import { IWithRfp, IFunctionPrint } from '../serber';
+import { PeerDecorator, IFunctionPrint } from '../serber';
+import { PeerRequest } from './methods';
 import { RfpPeer } from './peer';
 
-type FromRFPInternal<T> = T extends IWithRfp<infer WithoutRFP>
+type FromRFPInternal<T> = T extends PeerDecorator<infer WithoutRFP>
   ? WithoutRFP extends PromiseLike<infer WithoutPromise>
-    ? WithoutPromise extends IWithRfp<infer U>
+    ? WithoutPromise extends PeerDecorator<infer U>
       ? U
       : WithoutPromise
-    : WithoutRFP extends IWithRfp<infer U>
+    : WithoutRFP extends PeerDecorator<infer U>
     ? U
     : WithoutRFP
   : T extends PromiseLike<infer WithoutPromise>
-  ? WithoutPromise extends IWithRfp<infer WithoutRFP>
+  ? WithoutPromise extends PeerDecorator<infer WithoutRFP>
     ? WithoutRFP extends PromiseLike<infer U>
       ? U
       : WithoutRFP
@@ -68,19 +69,7 @@ export interface IRfpChunk<Body> extends IRfpChunkSend<Body>, IRfpChunkId, IRfpC
 
 export type IRfpNextResponse = () => void;
 
-export interface IRfpRequest<
-  PublicStore extends {} = {},
-  PrivateStore extends {} = {},
-  ProtectedStore extends {} = {},
-  Data extends any = any
-> {
-  chunk: IRfpChunk<Data>;
-  peer: RfpPeer<PublicStore, PrivateStore, ProtectedStore>;
-}
-
-export type RfpReceive<
-  PublicStore extends {} = {},
-  PrivateStore extends {} = {},
-  ProtectedStore extends {} = {},
-  Data extends any = any
-> = (request: IRfpRequest<PublicStore, PrivateStore, ProtectedStore, Data>, next: IRfpNextResponse) => any;
+export type RfpReceive<TPeer extends RfpPeer = RfpPeer, Data extends any = any> = (
+  request: PeerRequest<TPeer, Data>,
+  next: IRfpNextResponse,
+) => any;

@@ -3,6 +3,7 @@ import { bufferToBufferPrintPlugin } from './bufferToBufferPrintPlugin/plugin';
 import { classInstanceToClassPrintPlugin } from './classInstanceToClassPrintPlugin/plugin';
 import { functionToFunctionPrintPlugin } from './functionToFunctionPrintPlugin/plugin';
 import { errorToErrorPrintPlugin } from './errorToErrorPrintPlugin/plugin';
+import { peerDecoratorToResultPlugin } from './peerDecoratorToResultPlugin/plugin';
 
 export type InternalPluginsType = typeof internalPlugins;
 
@@ -23,6 +24,7 @@ export const serberWithPlugins = new Serber()
   .addPlugin(plugins.regExpPlugin)
   .addPlugin(plugins.arrayPlugin)
   .addPlugin(bufferToBufferPrintPlugin)
+  .addPlugin(peerDecoratorToResultPlugin)
   .addPlugin(classInstanceToClassPrintPlugin)
   .addPlugin(functionToFunctionPrintPlugin)
   .addPlugin(errorToErrorPrintPlugin)

@@ -1,8 +1,8 @@
 import { ISerberPlugin, SERBER_PARENT_OBJECT_SYMBOL, SERBER_KEY_SYMBOL } from '@berish/serber';
 import { RfpPeer } from '../../peer';
-import { generatePrintId, getPrintName, getPrintArguments, setName, getAsideFromLocalFunction } from './helper';
+import { generatePrintId, getPrintName, getPrintArguments, getAsideFromLocalFunction } from './utils';
 import { SYMBOL_SERBER_PEER, getType, createPrint, IPrint, PrintTypeEnum } from '../abstract';
-import { deferredReceivePrintFunction, startReceivePrintFunction, IDeferredList } from './network';
+import { deferredReceivePrintFunction, startReceivePrintFunction, DeferredReceiveList } from './network';
 import { executeRemoteFunction } from './network';
 
 export interface IFunction {
@@ -26,27 +26,27 @@ export interface IFunctionPrint extends IPrint<PrintTypeEnum.printFunction> {
 
 /**
  * Параметр, в который передается отпечаток функции для отложенного старта прослушивания.
- * Если параметр не передаетя, то тогда все отпечатки будут прослушены сразу
+ * Если параметр не передаетcя, то тогда все отпечатки будут прослушены сразу
  */
 export const SYMBOL_SERBER_DEFERRED_LIST = Symbol('serberDeferredList');
 
 /**
  * Параметр, в который передается название глобального пути (путь чанка).
  * Нужен только при сериализации, чтобы правильно давать имя для отпечатка функции в том случае, если у функции нет имени и нет ключа (то есть она сама родительская).
- * В таком случае, мы понимаем, что запросили чисто эту анонимную функцию по конкретному пути, значит и имя должны быть как путь.
+ * В таком случае, мы понимаем, что запросили чисто эту анонимную функцию по конкретному пути, значит и имя должно быть как путь.
  */
 export const SYMBOL_SERBER_CHUNK_REPLY_PATH = Symbol('serberChunkPath');
 
-export interface IFunctionToFunctionPrintPluginOptions {
+export interface FunctionToFunctionPrintPluginOptions {
   [SYMBOL_SERBER_PEER]: RfpPeer;
-  [SYMBOL_SERBER_DEFERRED_LIST]?: IDeferredList;
+  [SYMBOL_SERBER_DEFERRED_LIST]?: DeferredReceiveList;
   [SYMBOL_SERBER_CHUNK_REPLY_PATH]?: string;
 }
 
 export const functionToFunctionPrintPlugin: ISerberPlugin<
   IFunction,
   IFunctionPrint,
-  IFunctionToFunctionPrintPluginOptions
+  FunctionToFunctionPrintPluginOptions
 > = {
   isForSerialize: (obj) => getType(obj) === 'function',
   isForDeserialize: (obj) => getType(obj) === 'printFunction',
@@ -60,7 +60,6 @@ export const functionToFunctionPrintPlugin: ISerberPlugin<
     const thisArg = options[SERBER_PARENT_OBJECT_SYMBOL];
     const key = options[SERBER_KEY_SYMBOL];
 
-    const id = generatePrintId();
     const print: IFunctionPrint = {
       ...createPrint(PrintTypeEnum.printFunction),
       printId: generatePrintId(),
@@ -68,8 +67,11 @@ export const functionToFunctionPrintPlugin: ISerberPlugin<
       args: getPrintArguments(obj),
     };
 
-    if (deferredList) deferredReceivePrintFunction(print, obj, peer, deferredList, thisArg);
-    else startReceivePrintFunction(print, obj, peer, thisArg);
+    if (deferredList) {
+      deferredReceivePrintFunction(print, obj, peer, deferredList, thisArg);
+    } else {
+      startReceivePrintFunction(print, obj, peer, thisArg);
+    }
     return print;
   },
 

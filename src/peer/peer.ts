@@ -10,6 +10,7 @@ import { listen } from './listen';
 import { connect } from './connect';
 import { disconnect } from './disconnect';
 import { send } from './send';
+import { createRequest } from './methods';
 
 export class RfpPeer<
   PublicStore extends {} = {},
@@ -21,8 +22,8 @@ export class RfpPeer<
   private _transportUnsubscribeId: string = null;
 
   private _listeners: {
-    [path: string]: RfpReceive<PublicStore, PrivateStore>[];
-    [SYMBOL_MIDDLEWARE_LISTENERS]: RfpReceive<PublicStore, PrivateStore>[];
+    [path: string]: RfpReceive<RfpPeer>[];
+    [SYMBOL_MIDDLEWARE_LISTENERS]: RfpReceive<RfpPeer>[];
   } = {
     [SYMBOL_MIDDLEWARE_LISTENERS]: [],
   };
@@ -134,11 +135,11 @@ export class RfpPeer<
     return this;
   }
 
-  public middleware(listener: RfpReceive<PublicStore, PrivateStore, ProtectedStore>) {
+  public middleware(listener: RfpReceive<this>) {
     return middleware(this, listener);
   }
 
-  public listen<Data = any>(path: string, listener: RfpReceive<PublicStore, PrivateStore, ProtectedStore, Data>) {
+  public listen<Data = any>(path: string, listener: RfpReceive<this, Data>) {
     return listen(this, path, listener);
   }
 
@@ -148,7 +149,9 @@ export class RfpPeer<
   }
 
   public async send<Resolve = any, Data = any>(outcomeChunk: IRfpChunk<Data>) {
-    return send<Resolve, Data>(this, outcomeChunk);
+    const request = createRequest(this, outcomeChunk);
+
+    return send<Resolve, Data>(request);
   }
 
   public getLogger() {

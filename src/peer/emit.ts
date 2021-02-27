@@ -1,4 +1,5 @@
-import { IRfpChunk, IRfpRequest } from './types';
+import { IRfpChunk } from './types';
+import { createRequest } from './methods';
 import { RfpPeer } from './peer';
 import { nextPromise, SYMBOL_NEXT_STEP } from '../helpers';
 import { sendError } from './sendError';
@@ -12,7 +13,8 @@ export async function emit(peer: RfpPeer, incomeRawChunk: IRfpChunk<any>) {
   peer.getLogger()('peer')('emit').info(incomeChunk);
   const result = await emitListeners(peer, incomeChunk);
   if (!result) {
-    await sendError(peer, incomeChunk, new PeerPathNotFoundError());
+    const request = createRequest(peer, incomeChunk);
+    await sendError(request, new PeerPathNotFoundError());
   }
 }
 
@@ -22,16 +24,17 @@ async function emitListeners(peer: RfpPeer, incomeChunk: IRfpChunk<any>) {
 
   const listeners = [...middlewares, ...pathListeners];
   for (const listener of listeners) {
+    const request = createRequest(peer, incomeChunk);
+
     try {
-      const request: IRfpRequest = { chunk: { ...incomeChunk }, peer };
       const result = await nextPromise((next) => listener(request, next));
       if (result === SYMBOL_NEXT_STEP) continue;
       else {
-        await sendResponse(peer, incomeChunk, result);
+        await sendResponse(request, result);
         return true;
       }
     } catch (err) {
-      await sendError(peer, incomeChunk, err);
+      await sendError(request, err);
       return true;
     }
   }
