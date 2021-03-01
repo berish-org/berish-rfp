@@ -15,15 +15,8 @@ export async function connect(peer: RfpPeer, unsubscribeId: string) {
     if (!connected) throw new PeerInitialConnectionError();
     peer.logger('peer').info('connected');
   }
-  if (peer.publicStore) {
-    const scope = getScope(peer.publicStore);
-    if (scope.isConnected) scope.disconnect();
-    await scope.connect();
-  }
-  if (peer.privateStore) {
-    const scope = getScope(peer.privateStore);
-    if (scope.isConnected) scope.disconnect();
-    await scope.connect();
+  if (peer.store) {
+    await peer.store.connect();
   }
   await peer.emitter.emitAsync('connected');
   return unsubscribeId;

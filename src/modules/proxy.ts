@@ -38,8 +38,8 @@ class ProxyServer {
 
   public async reconnectAll(pull: PeerPull) {
     if (!pull) throw new Error('peer.pull is not defined. Use PeerPull on Server');
-    const clients = pull.peers.filter((m) => !(m.publicStore && m.publicStore['isDevServer'] === true));
-    await Promise.all(clients.map((m) => m.send({ path: 'reconnect force', notWaiting: true })));
+    // const clients = pull.peers.filter((m) => !(m.publicStore && m.publicStore['isDevServer'] === true));
+    // await Promise.all(clients.map((m) => m.send({ path: 'reconnect force', notWaiting: true })));
   }
 }
 

@@ -1,5 +1,5 @@
 import { StatefulObject, getScope } from '@berish/stateful';
-import { createStore, ServiceChannel } from '../modules';
+import { ServiceChannel } from '../modules';
 
 import type { PeerTransport } from '../transport';
 
@@ -19,11 +19,10 @@ import { connect } from './connect';
 import { disconnect } from './disconnect';
 import { send } from './send';
 import { createRequest } from './methods';
+import { PeerStore } from '../store/store';
 
 export class RfpPeer<
-  PublicStore extends {} = {},
-  PrivateStore extends {} = {},
-  ProtectedStore extends {} = {},
+  TPeerStore extends PeerStore<{}, {}, {}> = PeerStore<{}, {}, {}>,
   TransportType extends PeerTransport<any> = PeerTransport<any>
 > {
   private _transport: TransportType = null;
@@ -39,10 +38,7 @@ export class RfpPeer<
   private _debugLog: string = null;
 
   private _serberInstance: typeof serberWithPlugins = null;
-
-  private _publicStore: StatefulObject<PublicStore> = null;
-  private _privateStore: StatefulObject<PrivateStore> = null;
-  private _protectedStore: StatefulObject<ProtectedStore> = null;
+  private _store: TPeerStore = new PeerStore() as TPeerStore;
 
   private _serviceChannel: ServiceChannel = null;
   private _emitter: PeerEmitter = getEmitter();
@@ -83,16 +79,8 @@ export class RfpPeer<
     return this._serberInstance;
   }
 
-  public get publicStore() {
-    return this._publicStore;
-  }
-
-  public get privateStore() {
-    return this._privateStore;
-  }
-
-  public get protectedStore() {
-    return this._protectedStore;
+  public get store() {
+    return this._store;
   }
 
   public get emitter() {
@@ -114,7 +102,7 @@ export class RfpPeer<
 
   public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
     this._transport = transport as any;
-    return (this as any) as RfpPeer<PublicStore, PrivateStore, ProtectedStore, TPeerTransport>;
+    return (this as any) as RfpPeer<TPeerStore, TPeerTransport>;
   }
 
   public async connect() {
@@ -127,22 +115,10 @@ export class RfpPeer<
     this._transportUnsubscribeId = null;
   }
 
-  public setPublicStore<Store extends {} = {}>(target: Store) {
-    if (this._publicStore) getScope(this._publicStore).disconnect();
-    this._publicStore = (createStore(this, target, 'public') as any) as StatefulObject<PublicStore>;
-    return (this as any) as RfpPeer<Store, PrivateStore, ProtectedStore, TransportType>;
-  }
+  public setStore<TStore extends PeerStore = PeerStore>(store: TStore) {
+    this._store = store as any;
 
-  public setPrivateStore<Store extends {} = {}>(target: Store) {
-    if (this._privateStore) getScope(this._privateStore).disconnect();
-    this._privateStore = (createStore(this, target, 'private') as any) as StatefulObject<PrivateStore>;
-    return (this as any) as RfpPeer<PublicStore, Store, ProtectedStore, TransportType>;
-  }
-
-  public setProtectedStore<Store extends {} = {}>(target: Store) {
-    if (this._protectedStore) getScope(this._protectedStore).disconnect();
-    this._protectedStore = (createStore(this, target, 'protected') as any) as StatefulObject<ProtectedStore>;
-    return (this as any) as RfpPeer<PublicStore, PrivateStore, Store, TransportType>;
+    return (this as any) as RfpPeer<TStore, TransportType>;
   }
 
   public setSerber(callback: (internalPlugins: InternalPluginsType) => typeof serberWithPlugins) {
