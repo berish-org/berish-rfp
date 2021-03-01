@@ -21,24 +21,12 @@ export class PeerStore<
 
   private _peer: RfpPeer = null;
 
+  constructor(peer: RfpPeer) {
+    this._peer = peer;
+  }
+
   public get publicStore() {
     return this._publicStore;
-  }
-
-  public get privateStore() {
-    return this._privateStore;
-  }
-
-  public get protectedStore() {
-    return this._protectedStore;
-  }
-
-  public get peer() {
-    return this._peer;
-  }
-
-  public get isConnected() {
-    return this._isConnected;
   }
 
   public set publicStore(value: StatefulObject<PublicStore>) {
@@ -47,16 +35,32 @@ export class PeerStore<
     this._publicStore = createPeerStateful(this.peer, value, 'public');
   }
 
+  public get privateStore() {
+    return this._privateStore;
+  }
+
   public set privateStore(value: StatefulObject<PrivateStore>) {
     if (this.isConnected) throw new StoreChangedWhenConnectionError();
 
     this._privateStore = createPeerStateful(this.peer, value, 'private');
   }
 
+  public get protectedStore() {
+    return this._protectedStore;
+  }
+
   public set protectedStore(value: StatefulObject<ProtectedStore>) {
     if (this.isConnected) throw new StoreChangedWhenConnectionError();
 
     this._protectedStore = createPeerStateful(this.peer, value, 'protected');
+  }
+
+  public get peer() {
+    return this._peer;
+  }
+
+  public get isConnected() {
+    return this._isConnected;
   }
 
   public async connect() {

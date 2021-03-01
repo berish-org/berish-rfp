@@ -38,7 +38,7 @@ export class RfpPeer<
   private _debugLog: string = null;
 
   private _serberInstance: typeof serberWithPlugins = null;
-  private _store: TPeerStore = new PeerStore() as TPeerStore;
+  private _store: TPeerStore = new PeerStore(this) as TPeerStore;
 
   private _serviceChannel: ServiceChannel = null;
   private _emitter: PeerEmitter = getEmitter();
