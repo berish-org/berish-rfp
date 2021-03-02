@@ -13,7 +13,7 @@ import {
 } from './methods';
 import type { PeerStoreType } from './extension';
 
-export function createStore<T extends object>(
+export function createPeerStore<T extends object>(
   peer: Peer,
   storeName: string,
   storeType: PeerStoreType,
