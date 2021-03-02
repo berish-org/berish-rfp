@@ -13,21 +13,28 @@ import type { PeerChunk } from '../chunk';
 import { createRequest } from './methods';
 import { PeerReceive } from './receiveType';
 
-export class Peer<TransportType extends PeerTransport<any> = PeerTransport<any>> {
-  private _transport: TransportType = null;
+export interface PeerParams {
+  name?: string;
+  logger?: PeerLogger;
+}
+export class Peer {
+  private _name: string = null;
+  private _logger: PeerLogger = null;
+
+  private _transport: PeerTransport = null;
   private _connectionId: string = null;
-
   private _blockersChunks: PeerChunk<any>[] = null;
-  private _debugLog: string = null;
-
   private _serberInstance: typeof serberWithPlugins = null;
-
   private _serviceChannel: ServiceChannel = null;
-
   private _receiveEmitter: PeerReceiveEmitter = getReceiveEmitter();
   private _emitter: PeerEmitter = getEmitter();
 
-  private _logger: PeerLogger = getConsoleLogger();
+  constructor(params?: PeerParams) {
+    const { logger, name } = params || {};
+
+    this._logger = logger || getConsoleLogger();
+    this._name = name || undefined;
+  }
 
   public get logger() {
     return this._logger;
@@ -37,14 +44,18 @@ export class Peer<TransportType extends PeerTransport<any> = PeerTransport<any>>
     return this._transport;
   }
 
+  public set transport(value: PeerTransport) {
+    this._transport = value;
+  }
+
   public get blockersChunks() {
     if (!this._blockersChunks) this._blockersChunks = [];
+
     return this._blockersChunks;
   }
 
   public set blockersChunks(value: PeerChunk<any>[]) {
-    if (!value) this._blockersChunks = [];
-    else this._blockersChunks = value;
+    this._blockersChunks = value || [];
   }
 
   public get hasBlockers() {
@@ -81,11 +92,6 @@ export class Peer<TransportType extends PeerTransport<any> = PeerTransport<any>>
     return this;
   }
 
-  public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
-    this._transport = transport as any;
-    return (this as any) as Peer<TPeerTransport>;
-  }
-
   public async connect() {
     if (!this._connectionId) this._connectionId = await connect(this);
   }
@@ -99,11 +105,6 @@ export class Peer<TransportType extends PeerTransport<any> = PeerTransport<any>>
   public setSerber(callback: (internalPlugins: InternalPluginsType) => typeof serberWithPlugins) {
     const serber = callback(internalPlugins);
     if (serber) this._serberInstance = serber;
-    return this;
-  }
-
-  public setDebugLog(debugLog: string) {
-    this._debugLog = debugLog;
     return this;
   }
 
