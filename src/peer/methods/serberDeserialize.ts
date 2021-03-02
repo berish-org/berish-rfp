@@ -11,5 +11,5 @@ export function serberDeserialize<T = any>(incomeRawRequest: PeerRequest<Peer, a
     [SYMBOL_SERBER_REGISTRATOR]: null,
   });
 
-  return Object.freeze(incomeChunk);
+  return incomeChunk;
 }
