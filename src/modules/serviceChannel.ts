@@ -1,4 +1,4 @@
-import { IRfpNextResponse, RfpPeer } from '../peer';
+import type { PeerNextResponse, RfpPeer } from '../peer';
 import type { PeerChunkBlockForce } from '../chunk';
 import { PeerRequest } from '../peer/methods';
 import { magicalDictionary } from '../constants';
@@ -16,7 +16,7 @@ export interface IRfpServiceRequest<T> extends PeerRequest {
 
 export type RfpServiceMiddlewareReceive<StoreState = any> = (
   request: IRfpServiceRequest<StoreState>,
-  next: IRfpNextResponse,
+  next: PeerNextResponse,
 ) => any;
 
 export class ServiceChannel {
@@ -63,12 +63,16 @@ export class ServiceChannel {
   }
 
   public receive<InputData>(commandName: string, listener: RfpServiceMiddlewareReceive<InputData>) {
-    return this.peer.listen<any>(magicalDictionary.serviceChannel, ({ chunk, peer }, next) => {
+    return this.peer.receive<any>(magicalDictionary.serviceChannel, ({ chunk, peer }, next) => {
       const responseCommand: IRfpServiceData<InputData> = chunk.body;
       if (!responseCommand.moduleName || !responseCommand.commandName) throw new ServiceChannelNameEmptyError();
       if (responseCommand.moduleName !== this._moduleName) return next();
       if (responseCommand.commandName !== commandName) return next();
       return listener({ chunk, peer, serviceData: responseCommand.data }, next);
     });
+  }
+
+  public unreceive(receiveHash: string) {
+    this.peer.unreceive(receiveHash);
   }
 }

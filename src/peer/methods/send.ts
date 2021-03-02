@@ -1,25 +1,25 @@
-import guid from 'berish-guid';
-import { RfpPeer } from './peer';
-import { PeerRequest } from './methods';
-import type { PeerChunk } from '../chunk';
-import { DeferredReceiveList, deferredReceiveStart } from '..';
-import { serberSerialize } from './serberSerialize';
+import type { RfpPeer } from '../peer';
+import { fillChunk, PeerChunk } from '../../chunk';
+
+import { DeferredReceiveList, deferredReceiveStart } from '../../serber';
+
+import { createRequest } from './createRequest';
 import { waitUnblockAll } from './waitUnblockAll';
 import { wait } from './wait';
+import { serberSerialize } from './serberSerialize';
 
-export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPeer, Data>, replyPath?: string) {
-  const { chunk: outcomeChunk, peer } = request;
+export async function send<Resolve = any, Data = any>(
+  peer: RfpPeer,
+  outcomeChunk: PeerChunk<Data>,
+  incomeChunk?: PeerChunk<any>,
+) {
+  outcomeChunk = outcomeChunk && fillChunk(outcomeChunk);
+  incomeChunk = incomeChunk && fillChunk(incomeChunk);
 
-  outcomeChunk.chunkId = outcomeChunk.chunkId || guid.guid();
-  outcomeChunk.aside = outcomeChunk.aside || ({} as any);
-  outcomeChunk.status = outcomeChunk.status || 'initial';
-  outcomeChunk.notWaiting = !!outcomeChunk.notWaiting;
-  outcomeChunk.isBlocker = !!outcomeChunk.isBlocker;
-  outcomeChunk.isForce = !!outcomeChunk.isForce;
+  const outcomeRequest = outcomeChunk && createRequest(peer, outcomeChunk);
+  const incomeRequest = incomeChunk && createRequest(peer, incomeChunk);
 
-  if (!outcomeChunk.isForce && peer.hasBlockers) {
-    await waitUnblockAll(peer);
-  }
+  if (!outcomeChunk.isForce && peer.hasBlockers) await waitUnblockAll(peer);
 
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
     peer.blockersChunks.push(outcomeChunk);
@@ -27,7 +27,7 @@ export async function send<Resolve = any, Data = any>(request: PeerRequest<RfpPe
   }
 
   const deferredList: DeferredReceiveList = {};
-  const outcomeRawChunk = serberSerialize(request, deferredList, replyPath);
+  const outcomeRawChunk = serberSerialize(outcomeRequest, deferredList, incomeRequest);
   deferredReceiveStart(deferredList);
 
   peer.transport.send(peer, outcomeRawChunk);

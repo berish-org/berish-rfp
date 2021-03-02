@@ -13,20 +13,16 @@ import {
 } from './methods';
 import type { PeerStoreType } from './extension';
 
-export function createPeerStateful<T extends object>(
-  peer: RfpPeer,
-  store: StatefulObject<T>,
-  storeType: PeerStoreType,
-) {
+export function createStore<T extends object>(peer: RfpPeer, store: StatefulObject<T>, storeType: PeerStoreType) {
   const scope = getScope(store);
 
   scope.peer = peer;
   scope.storeType = storeType;
   scope.logger = scope.peer.logger('store')(scope.storeType);
   scope.isConnected = false;
+
   scope.connect = () => connect(store);
   scope.disconnect = () => disconnect(store);
-
   scope.sync = () => sync(store);
   scope.reactionSetValueRemote = (callback) => reactionSetValueRemote(store, callback);
   scope.reactionSetStateRemote = (callback) => reactionSetStateRemote(store, callback);

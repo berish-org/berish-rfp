@@ -277,11 +277,12 @@
   dependencies:
     "@berish/linq" "^1.0.5"
 
-"@berish/emitter@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@berish/emitter/-/emitter-1.1.0.tgz#16620269aff874b172cd4a508421556fa67caa39"
-  integrity sha512-CuDGDu89CailefhJXLyoHIIQVIJ/GQgbI5UfDAlFJTMYlMcTYOlaIgXbFBCpxxSGltyvKWU3eqTUL/oK2wCwag==
+"@berish/emitter@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@berish/emitter/-/emitter-1.3.0.tgz#7147001925389c6ff9e066d245362a632b943bdd"
+  integrity sha512-YC3vjjADI6xg6VeoCnafAs8nhDdMqATRBiUljWDQRMHc4EEgaEgv7SP7MNClLoxPSsiSMa4TeDkcp8GQ2dc/WA==
   dependencies:
+    "@berish/linq" "^1.1.0"
     berish-guid "^2.0.0"
 
 "@berish/linq@^1.0.4", "@berish/linq@^1.0.5", "@berish/linq@^1.1.0":
@@ -303,7 +304,7 @@
     "@berish/pathof" "^1.1.0"
     "@berish/typeof" "^1.0.0"
 
-"@berish/stateful@0.2.1":
+"@berish/stateful@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@berish/stateful/-/stateful-0.2.1.tgz#2eecab84b971a3119f7af71fcdc0827d49d54eca"
   integrity sha512-XbH//agYU2WGosKZqLhxjIVXWNt8sKia/TK/GXlKDty+9dMTf11HNLP+Wv57d7ub/Yo2DQ20suouWc7XD6Suqg==

@@ -1,47 +1,32 @@
-import { StatefulObject, getScope } from '@berish/stateful';
 import { ServiceChannel } from '../modules';
-
 import type { PeerTransport } from '../transport';
 
 import type { PeerLogger } from '../logger';
 import { getConsoleLogger } from '../logger';
 
-import type { PeerEmitter } from '../emitter';
-import { getEmitter } from '../emitter';
+import type { PeerEmitter, PeerReceiveEmitter } from '../emitter';
+import { getEmitter, getReceiveEmitter } from '../emitter';
 
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
-import { RfpReceive } from './types';
+import { receive, connect, disconnect, sendInitial, sendReject, sendResolve, unreceive, unreceiveAll } from './methods';
 import type { PeerChunk } from '../chunk';
-import { SYMBOL_MIDDLEWARE_LISTENERS } from '../constants';
-import { middleware } from './middleware';
-import { listen } from './listen';
-import { connect } from './connect';
-import { disconnect } from './disconnect';
-import { send } from './send';
 import { createRequest } from './methods';
-import { PeerStore } from '../store/store';
+import { PeerReceive } from './receiveType';
 
-export class RfpPeer<
-  TPeerStore extends PeerStore<{}, {}, {}> = PeerStore<{}, {}, {}>,
-  TransportType extends PeerTransport<any> = PeerTransport<any>
-> {
+export class RfpPeer<TransportType extends PeerTransport<any> = PeerTransport<any>> {
   private _transport: TransportType = null;
-  private _transportUnsubscribeId: string = null;
+  private _connectionId: string = null;
 
-  private _listeners: {
-    [path: string]: RfpReceive<RfpPeer>[];
-    [SYMBOL_MIDDLEWARE_LISTENERS]: RfpReceive<RfpPeer>[];
-  } = {
-    [SYMBOL_MIDDLEWARE_LISTENERS]: [],
-  };
   private _blockersChunks: PeerChunk<any>[] = null;
   private _debugLog: string = null;
 
   private _serberInstance: typeof serberWithPlugins = null;
-  private _store: TPeerStore = new PeerStore(this) as TPeerStore;
 
   private _serviceChannel: ServiceChannel = null;
+
+  private _receiveEmitter: PeerReceiveEmitter = getReceiveEmitter();
   private _emitter: PeerEmitter = getEmitter();
+
   private _logger: PeerLogger = getConsoleLogger();
 
   public get logger() {
@@ -50,14 +35,6 @@ export class RfpPeer<
 
   public get transport() {
     return this._transport;
-  }
-
-  public get isConnected() {
-    return !!this._transportUnsubscribeId;
-  }
-
-  public get listeners() {
-    return this._listeners;
   }
 
   public get blockersChunks() {
@@ -79,12 +56,16 @@ export class RfpPeer<
     return this._serberInstance;
   }
 
-  public get store() {
-    return this._store;
+  public get receiveEmitter() {
+    return this._receiveEmitter;
   }
 
   public get emitter() {
     return this._emitter;
+  }
+
+  public get isConnected() {
+    return !!this._connectionId;
   }
 
   public get serviceChannel() {
@@ -102,23 +83,17 @@ export class RfpPeer<
 
   public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
     this._transport = transport as any;
-    return (this as any) as RfpPeer<TPeerStore, TPeerTransport>;
+    return (this as any) as RfpPeer<TPeerTransport>;
   }
 
   public async connect() {
-    const newUnsubscribeId = await connect(this, this._transportUnsubscribeId);
-    this._transportUnsubscribeId = newUnsubscribeId;
+    if (!this._connectionId) this._connectionId = await connect(this);
   }
 
-  public disconnect() {
-    disconnect(this, this._transportUnsubscribeId);
-    this._transportUnsubscribeId = null;
-  }
+  public async disconnect() {
+    if (this._connectionId) await disconnect(this, this._connectionId);
 
-  public setStore<TStore extends PeerStore = PeerStore>(store: TStore) {
-    this._store = store as any;
-
-    return (this as any) as RfpPeer<TStore, TransportType>;
+    this._connectionId = null;
   }
 
   public setSerber(callback: (internalPlugins: InternalPluginsType) => typeof serberWithPlugins) {
@@ -132,22 +107,20 @@ export class RfpPeer<
     return this;
   }
 
-  public middleware(listener: RfpReceive<this>) {
-    return middleware(this, listener);
+  public receive<Data = any>(path: string, listener: PeerReceive<this, Data>): string {
+    return receive(this, path, listener);
   }
 
-  public listen<Data = any>(path: string, listener: RfpReceive<this, Data>) {
-    return listen(this, path, listener);
+  public unreceive<Data = any>(receiveHash: string): void {
+    return unreceive(this, receiveHash);
   }
 
-  public unlistenAll() {
-    this._listeners = { [SYMBOL_MIDDLEWARE_LISTENERS]: [] };
-    return this;
+  public unreceiveAll() {
+    return unreceiveAll(this);
   }
 
   public async send<Resolve = any, Data = any>(outcomeChunk: PeerChunk<Data>) {
     const request = createRequest(this, outcomeChunk);
-
-    return send<Resolve, Data>(request);
+    return sendInitial<Resolve, Data>(request);
   }
 }

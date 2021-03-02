@@ -9,4 +9,3 @@ export const magicalDictionary = {
 };
 
 export const SYMBOL_NO_RESPONSE = Symbol('noResponse');
-export const SYMBOL_MIDDLEWARE_LISTENERS = Symbol('middlewareListeners');

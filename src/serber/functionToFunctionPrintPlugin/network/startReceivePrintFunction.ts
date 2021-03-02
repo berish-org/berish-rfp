@@ -9,7 +9,7 @@ export function startReceivePrintFunction(
   peer: RfpPeer,
   thisArg?: any,
 ) {
-  peer.listen(print.printId, async ({ chunk }, next) => {
+  peer.receive(print.printId, async ({ chunk }) => {
     const args = chunk.body;
     if (thisArg) localFunction = localFunction.bind(thisArg);
     // const newArgs = getArgumentsValues(print.args, args, request);

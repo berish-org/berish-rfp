@@ -79,7 +79,12 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return this._emitter.cacheSubscribe<any>(
       'subscribe',
       (callback) => this.transportAdapter.subscribe(this._transportName, callback),
-      (data) => this._beforeResponse(peer, data).then((chunk) => callback(chunk)),
+      async (data) => {
+        try {
+          const __beforeResponse = await this._beforeResponse(peer, data);
+          callback(__beforeResponse);
+        } catch (err) {}
+      },
     );
   }
 

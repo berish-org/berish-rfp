@@ -1,3 +1,3 @@
 import './extension';
 
-export * from './store';
+export * from './createStore';

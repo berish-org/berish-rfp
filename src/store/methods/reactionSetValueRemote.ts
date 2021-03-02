@@ -10,9 +10,13 @@ export function reactionSetValueRemote<T extends object>(store: StatefulObject<T
 
   const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeType);
 
-  return scope.serviceChannel.receive<PeerStoreSetValueData>(commandName, ({ serviceData }) => {
+  const receiveHash = scope.serviceChannel.receive<PeerStoreSetValueData>(commandName, ({ serviceData }) => {
     scope.logger('reactionSetValueRemote').info(serviceData);
     const { props, value } = serviceData;
     callback(props, value);
   });
+
+  return () => {
+    scope.serviceChannel.unreceive(receiveHash);
+  };
 }
