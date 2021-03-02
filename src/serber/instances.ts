@@ -9,6 +9,7 @@ export type InternalPluginsType = typeof internalPlugins;
 
 export const internalPlugins = {
   bufferToBufferPrintPlugin,
+  peerDecoratorToResultPlugin,
   classInstanceToClassPrintPlugin,
   functionToFunctionPrintPlugin,
   errorToErrorPrintPlugin,
