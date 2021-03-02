@@ -1,14 +1,9 @@
-import type { RfpPeer } from '../../../peer';
+import type { Peer } from '../../../peer';
 import type { IFunction, IFunctionPrint } from '../plugin';
 
 import { executeLocalFunction } from './executeLocalFunction';
 
-export function startReceivePrintFunction(
-  print: IFunctionPrint,
-  localFunction: IFunction,
-  peer: RfpPeer,
-  thisArg?: any,
-) {
+export function startReceivePrintFunction(print: IFunctionPrint, localFunction: IFunction, peer: Peer, thisArg?: any) {
   peer.receive(print.printId, async ({ chunk }) => {
     const args = chunk.body;
     if (thisArg) localFunction = localFunction.bind(thisArg);

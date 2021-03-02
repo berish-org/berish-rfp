@@ -2,7 +2,7 @@ import type, { ITypeofHandler, TypeofResult } from '@berish/typeof';
 import { magicalDictionary } from '../constants';
 
 /**
- * Параметр, который является RfpPeer
+ * Параметр, который является Peer
  */
 export const SYMBOL_SERBER_PEER = Symbol('serberPeer');
 export enum PrintTypeEnum {

@@ -1,4 +1,4 @@
-import type { RfpPeer } from '../../../peer';
+import type { Peer } from '../../../peer';
 import type { IFunctionPrint } from '../plugin';
 
 import { PeerIsDisconnectedError } from '../../../errors';
@@ -7,7 +7,7 @@ import { PeerIsDisconnectedError } from '../../../errors';
  * Метод, который выполняет вызов удаленной функции по отпечатку
  */
 export async function executeRemoteFunction(
-  peer: RfpPeer,
+  peer: Peer,
   print: IFunctionPrint,
   aside: { [key: string]: any },
   executeArgs: any[],

@@ -1,7 +1,7 @@
 import guid from 'berish-guid';
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 
-export function checkConnection(peer: RfpPeer) {
+export function checkConnection(peer: Peer) {
   const generateConnectionCode = guid.generateId();
   let receiveHash = peer.serviceChannel.receive<string>('connection', ({ serviceData }) => {
     peer.unreceive(receiveHash);

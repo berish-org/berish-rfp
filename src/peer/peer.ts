@@ -13,7 +13,7 @@ import type { PeerChunk } from '../chunk';
 import { createRequest } from './methods';
 import { PeerReceive } from './receiveType';
 
-export class RfpPeer<TransportType extends PeerTransport<any> = PeerTransport<any>> {
+export class Peer<TransportType extends PeerTransport<any> = PeerTransport<any>> {
   private _transport: TransportType = null;
   private _connectionId: string = null;
 
@@ -83,7 +83,7 @@ export class RfpPeer<TransportType extends PeerTransport<any> = PeerTransport<an
 
   public setTransport<TPeerTransport extends PeerTransport<any>>(transport: TPeerTransport) {
     this._transport = transport as any;
-    return (this as any) as RfpPeer<TPeerTransport>;
+    return (this as any) as Peer<TPeerTransport>;
   }
 
   public async connect() {

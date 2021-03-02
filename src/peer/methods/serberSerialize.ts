@@ -1,4 +1,4 @@
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import { fillChunk, PeerChunk } from '../../chunk';
 import {
   SYMBOL_SERBER_PEER,
@@ -12,9 +12,9 @@ import { SYMBOL_SERBER_REQUEST } from '../../serber/peerDecoratorToResultPlugin'
 import { PeerRequest } from './createRequest';
 
 export function serberSerialize(
-  outcomeRequest: PeerRequest<RfpPeer, any>,
+  outcomeRequest: PeerRequest<Peer, any>,
   deferredList: DeferredReceiveList,
-  incomeRequest?: PeerRequest<RfpPeer, any>,
+  incomeRequest?: PeerRequest<Peer, any>,
 ) {
   const {
     peer,

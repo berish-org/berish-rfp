@@ -1,13 +1,13 @@
 import type { PeerChunk } from '../chunk';
-import type { RfpPeer } from './peer';
+import type { Peer } from './peer';
 
-export interface PeerRequest<TPeer extends RfpPeer = RfpPeer, TData extends any = any> {
+export interface PeerRequest<TPeer extends Peer = Peer, TData extends any = any> {
   chunk: PeerChunk<TData>;
   peer: TPeer;
 }
 
 export type PeerNextResponse = () => void;
 
-export interface PeerReceive<TPeer extends RfpPeer = RfpPeer, TData extends any = any> {
+export interface PeerReceive<TPeer extends Peer = Peer, TData extends any = any> {
   (request: PeerRequest<TPeer, TData>, next: PeerNextResponse): any;
 }

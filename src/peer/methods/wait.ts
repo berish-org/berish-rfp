@@ -1,12 +1,12 @@
 import type { FromPeer } from '../fromPeerType';
 import type { PeerChunk } from '../../chunk';
-import { RfpPeer } from '../peer';
+import { Peer } from '../peer';
 import { SYMBOL_NO_RESPONSE } from '../../constants';
 import { receive } from './receive';
 import { PeerRequest } from '../receiveType';
 import { unreceive } from './unreceive';
 
-export function wait<Resolve = any, Chunk extends PeerChunk<any> = PeerChunk<any>>(peer: RfpPeer, chunk: Chunk) {
+export function wait<Resolve = any, Chunk extends PeerChunk<any> = PeerChunk<any>>(peer: Peer, chunk: Chunk) {
   return new Promise<PeerChunk<FromPeer<Resolve>> & { replyChunk: Chunk }>((resolve, reject) => {
     const receiveHash = receive(peer, chunk.chunkId, ({ chunk: replyChunk }: PeerRequest) => {
       peer.unreceive(receiveHash);

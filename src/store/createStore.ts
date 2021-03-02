@@ -1,5 +1,5 @@
 import { createStateful, getScope, StatefulObject } from '@berish/stateful';
-import { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import { ServiceChannel } from '../modules/serviceChannel';
 
 import {
@@ -13,7 +13,7 @@ import {
 } from './methods';
 import type { PeerStoreType } from './extension';
 
-export function createStore<T extends object>(peer: RfpPeer, store: StatefulObject<T>, storeType: PeerStoreType) {
+export function createStore<T extends object>(peer: Peer, store: StatefulObject<T>, storeType: PeerStoreType) {
   const scope = getScope(store);
 
   scope.peer = peer;

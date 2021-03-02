@@ -1,5 +1,5 @@
-import { RfpPeer } from '../peer';
+import { Peer } from '../peer';
 
-export function unreceiveAll(peer: RfpPeer) {
+export function unreceiveAll(peer: Peer) {
   peer.receiveEmitter.offAll();
 }

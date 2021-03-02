@@ -1,6 +1,6 @@
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 
-export async function disconnect(peer: RfpPeer, connectionId: string): Promise<void> {
+export async function disconnect(peer: Peer, connectionId: string): Promise<void> {
   const logger = peer.logger('peer');
 
   await peer.emitter.emitStateAsync('disconnect.start', null);

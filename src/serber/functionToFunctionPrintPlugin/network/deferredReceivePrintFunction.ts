@@ -1,4 +1,4 @@
-import type { RfpPeer } from '../../../peer';
+import type { Peer } from '../../../peer';
 import type { IFunction, IFunctionPrint } from '../plugin';
 import type { DeferredReceiveList } from './deferredReceiveStart';
 
@@ -11,7 +11,7 @@ import { startReceivePrintFunction } from './startReceivePrintFunction';
 export function deferredReceivePrintFunction(
   print: IFunctionPrint,
   localFunction: IFunction,
-  peer: RfpPeer,
+  peer: Peer,
   deferredFuncs: DeferredReceiveList,
   thisArg?: any,
 ) {

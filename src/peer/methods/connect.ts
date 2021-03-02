@@ -1,12 +1,12 @@
 import { getScope } from '@berish/stateful';
 import { PeerInitialConnectionError } from '../../errors';
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import { disconnect } from './disconnect';
 import { checkConnection } from './checkConnection';
 import { emit } from './emit';
 import { createRequest } from './createRequest';
 
-export async function connect(peer: RfpPeer): Promise<string> {
+export async function connect(peer: Peer): Promise<string> {
   const logger = peer.logger;
 
   try {

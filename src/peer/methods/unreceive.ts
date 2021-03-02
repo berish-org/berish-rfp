@@ -1,6 +1,5 @@
-import { RfpPeer } from '../peer';
-import { PeerReceive } from '../receiveType';
+import type { Peer } from '../peer';
 
-export function unreceive(peer: RfpPeer, eventHash: string) {
+export function unreceive(peer: Peer, eventHash: string) {
   peer.receiveEmitter.off(eventHash);
 }

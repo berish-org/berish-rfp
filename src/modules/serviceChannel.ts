@@ -1,4 +1,4 @@
-import type { PeerNextResponse, RfpPeer } from '../peer';
+import type { PeerNextResponse, Peer } from '../peer';
 import type { PeerChunkBlockForce } from '../chunk';
 import { PeerRequest } from '../peer/methods';
 import { magicalDictionary } from '../constants';
@@ -26,10 +26,10 @@ export class ServiceChannel {
     return new ServiceChannel().moduleName(moduleName);
   }
 
-  private _peer: RfpPeer = null;
+  private _peer: Peer = null;
   private _moduleName: string = null;
 
-  public setPeer(peer: RfpPeer) {
+  public setPeer(peer: Peer) {
     this._peer = peer;
     return this;
   }

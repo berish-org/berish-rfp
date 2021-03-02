@@ -1,4 +1,4 @@
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import { fillChunk, PeerChunk } from '../../chunk';
 
 import { DeferredReceiveList, deferredReceiveStart } from '../../serber';
@@ -9,7 +9,7 @@ import { wait } from './wait';
 import { serberSerialize } from './serberSerialize';
 
 export async function send<Resolve = any, Data = any>(
-  peer: RfpPeer,
+  peer: Peer,
   outcomeChunk: PeerChunk<Data>,
   incomeChunk?: PeerChunk<any>,
 ) {

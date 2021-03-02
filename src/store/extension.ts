@@ -1,5 +1,5 @@
 import '@berish/stateful/build/types';
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import type { ServiceChannel } from '../modules';
 import type { PeerLogger } from '../logger';
 
@@ -9,7 +9,7 @@ declare module '@berish/stateful/build/types' {
   export interface IStatefulScope<T> {
     storeType: PeerStoreType;
     logger: PeerLogger;
-    peer: RfpPeer;
+    peer: Peer;
     serviceChannel: ServiceChannel;
 
     isConnected: boolean;

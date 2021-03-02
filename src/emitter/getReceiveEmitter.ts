@@ -1,6 +1,6 @@
 import { EventEmitter } from '@berish/emitter';
 
-import type { PeerNextResponse, PeerRequest, RfpPeer } from '../peer';
+import type { PeerNextResponse, PeerRequest } from '../peer';
 
 export interface PeerReceiveEmitterEventMap {
   [receiveName: string]: {

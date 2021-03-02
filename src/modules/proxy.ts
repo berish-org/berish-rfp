@@ -1,4 +1,4 @@
-import { RfpPeer } from '../peer';
+import { Peer } from '../peer';
 import { PeerPull } from './pull';
 import { ServiceChannel } from './serviceChannel';
 import { ProxyConnectionDataConfusedError } from '../errors';
@@ -57,7 +57,7 @@ export class Proxy {
 
   private _serviceChannel: ServiceChannel = ServiceChannel.getServiceChannel(serviceModuleName);
 
-  constructor(currentPeer: RfpPeer) {
+  constructor(currentPeer: Peer) {
     this._serviceChannel = this._serviceChannel.setPeer(currentPeer);
     this.client = new ProxyClient(this._serviceChannel);
     this.server = new ProxyServer(this._serviceChannel);

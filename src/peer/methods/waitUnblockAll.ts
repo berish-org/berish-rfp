@@ -1,6 +1,6 @@
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 
-export function waitUnblockAll(peer: RfpPeer) {
+export function waitUnblockAll(peer: Peer) {
   peer.logger('peer')('waitUnblockAll').info(peer.blockersChunks);
 
   return new Promise<void>((resolve) => {

@@ -1,5 +1,5 @@
 import type { PeerChunk } from '../../chunk';
-import type { RfpPeer } from '../peer';
+import type { Peer } from '../peer';
 import { PeerPathNotFoundError } from '../../errors';
 import { nextPromise, SYMBOL_NEXT_STEP } from '../../helpers';
 
@@ -8,7 +8,7 @@ import { createRequest, PeerRequest } from './createRequest';
 import { sendReject } from './sendReject';
 import { sendResolve } from './sendResolve';
 
-export async function emit(rawRequest: PeerRequest<RfpPeer, any>) {
+export async function emit(rawRequest: PeerRequest<Peer, any>) {
   const { peer } = rawRequest;
   const incomeChunk = serberDeserialize(rawRequest);
 
@@ -21,7 +21,7 @@ export async function emit(rawRequest: PeerRequest<RfpPeer, any>) {
   }
 }
 
-async function emitListeners(request: PeerRequest<RfpPeer, any>) {
+async function emitListeners(request: PeerRequest<Peer, any>) {
   const { peer, chunk } = request;
   const events = peer.receiveEmitter.getEvents(chunk.path);
 

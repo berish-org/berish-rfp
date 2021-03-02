@@ -1,8 +1,8 @@
 import { send } from './send';
 import { PeerRequest } from './createRequest';
-import { RfpPeer } from '../peer';
+import { Peer } from '../peer';
 
-export async function sendInitial<Resolve = any, Data = any>(outcomeRequest: PeerRequest<RfpPeer, Data>) {
+export async function sendInitial<Resolve = any, Data = any>(outcomeRequest: PeerRequest<Peer, Data>) {
   const { peer, chunk } = outcomeRequest;
   return send<Resolve, Data>(peer, chunk);
 }

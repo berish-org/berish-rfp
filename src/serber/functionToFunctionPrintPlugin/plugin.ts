@@ -1,5 +1,5 @@
 import { ISerberPlugin, SERBER_PARENT_OBJECT_SYMBOL, SERBER_KEY_SYMBOL } from '@berish/serber';
-import { RfpPeer } from '../../peer';
+import type { Peer } from '../../peer';
 import { generatePrintId, getPrintName, getPrintArguments, getAsideFromLocalFunction } from './utils';
 import { SYMBOL_SERBER_PEER, getType, createPrint, IPrint, PrintTypeEnum } from '../abstract';
 import { deferredReceivePrintFunction, startReceivePrintFunction, DeferredReceiveList } from './network';
@@ -38,7 +38,7 @@ export const SYMBOL_SERBER_DEFERRED_LIST = Symbol('serberDeferredList');
 export const SYMBOL_SERBER_CHUNK_REPLY_PATH = Symbol('serberChunkPath');
 
 export interface FunctionToFunctionPrintPluginOptions {
-  [SYMBOL_SERBER_PEER]: RfpPeer;
+  [SYMBOL_SERBER_PEER]: Peer;
   [SYMBOL_SERBER_DEFERRED_LIST]?: DeferredReceiveList;
   [SYMBOL_SERBER_CHUNK_REPLY_PATH]?: string;
 }
