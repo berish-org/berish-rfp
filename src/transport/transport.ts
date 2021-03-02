@@ -83,7 +83,9 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
         try {
           const __beforeResponse = await this._beforeResponse(peer, data);
           callback(__beforeResponse);
-        } catch (err) {}
+        } catch (err) {
+          // Ошибка на транспортном уровне
+        }
       },
     );
   }
