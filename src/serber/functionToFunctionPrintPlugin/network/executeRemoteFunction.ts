@@ -13,9 +13,7 @@ export async function executeRemoteFunction(
   executeArgs: any[],
 ) {
   const { printId } = print;
-  if (peer.isConnected) {
-    const result = await peer.send({ path: printId, body: executeArgs || [], aside });
-    return result.body;
-  }
-  throw new ConnectionError('Peer is disconnected');
+
+  const result = await peer.send({ path: printId, body: executeArgs || [], aside });
+  return result.body;
 }

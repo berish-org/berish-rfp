@@ -13,9 +13,9 @@ export async function send<Resolve = any, Data = any>(
   peer: Peer,
   outcomeChunk: PeerChunk<Data>,
   incomeChunk?: PeerChunk<any>,
-  force?: boolean,
 ) {
-  if (!peer.isConnected && !force) throw new ConnectionError('Peer is disconnected');
+  if (!peer) throw new TypeError('send Peer is null');
+  if (!peer.connection) throw new ConnectionError('Peer is disconnected');
 
   outcomeChunk = outcomeChunk && fillChunk(outcomeChunk);
   incomeChunk = incomeChunk && fillChunk(incomeChunk);
@@ -34,7 +34,7 @@ export async function send<Resolve = any, Data = any>(
   const outcomeRawChunk = await serberSerialize(outcomeRequest, deferredList, incomeRequest);
   deferredReceiveStart(deferredList);
 
-  peer.transport.send(peer, outcomeRawChunk);
+  peer.connection.transport.send(peer, outcomeRawChunk);
   peer.logger('peer')('send').info(outcomeRawChunk);
 
   if (outcomeChunk.notWaiting) {

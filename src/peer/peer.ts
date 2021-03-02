@@ -8,21 +8,21 @@ import type { PeerEmitter, PeerReceiveEmitter } from '../emitter';
 import { getEmitter, getReceiveEmitter } from '../emitter';
 
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
-import { receive, connect, disconnect, sendInitial, sendReject, sendResolve, unreceive, unreceiveAll } from './methods';
+import { receive, sendInitial, unreceive, unreceiveAll } from './methods';
 import type { PeerChunk } from '../chunk';
 import { createRequest } from './methods';
 import { PeerReceive } from './receiveType';
+import { ConnectionError } from '../errors';
+import { PeerConnection } from '../connection';
 
 export interface PeerParams {
   name?: string;
   logger?: PeerLogger;
 }
 export class Peer {
-  private _name: string = null;
   private _logger: PeerLogger = null;
 
-  private _transport: PeerTransport = null;
-  private _connectionId: string = null;
+  private _connection: PeerConnection<any> = null;
   private _blockersChunks: PeerChunk<any>[] = null;
   private _serberInstance: typeof serberWithPlugins = null;
 
@@ -34,19 +34,10 @@ export class Peer {
     const { logger, name } = params || {};
 
     this._logger = logger || getConsoleLogger(name);
-    this._name = name || undefined;
   }
 
   public get logger() {
     return this._logger;
-  }
-
-  public get transport() {
-    return this._transport;
-  }
-
-  public set transport(value: PeerTransport) {
-    this._transport = value;
   }
 
   public get blockersChunks() {
@@ -80,8 +71,12 @@ export class Peer {
     return this._serviceChannel;
   }
 
-  public get isConnected() {
-    return !!this._connectionId;
+  public get connection() {
+    return this._connection;
+  }
+
+  public set connection(value: PeerConnection<any>) {
+    this._connection = value;
   }
 
   public setLogger(logger: PeerLogger) {
@@ -92,14 +87,12 @@ export class Peer {
     return this;
   }
 
-  public async connect() {
-    if (!this._connectionId) this._connectionId = await connect(this);
+  public async connect(transport: PeerTransport<any>) {
+    await PeerConnection.connect(this, transport);
   }
 
   public async disconnect() {
-    if (this._connectionId) await disconnect(this, this._connectionId);
-
-    this._connectionId = null;
+    await PeerConnection.disconnect(this);
   }
 
   public setSerber(callback: (internalPlugins: InternalPluginsType) => typeof serberWithPlugins) {
@@ -112,7 +105,7 @@ export class Peer {
     return receive(this, path, listener);
   }
 
-  public unreceive<Data = any>(receiveHash: string): void {
+  public unreceive(receiveHash: string): void {
     return unreceive(this, receiveHash);
   }
 
@@ -121,7 +114,6 @@ export class Peer {
   }
 
   public async send<Resolve = any, Data = any>(outcomeChunk: PeerChunk<Data>) {
-    const request = createRequest(this, outcomeChunk);
-    return sendInitial<Resolve, Data>(request);
+    return sendInitial<Resolve, Data>(createRequest(this, outcomeChunk));
   }
 }

@@ -49,7 +49,6 @@ export class ServiceChannel {
       this.peer,
       { path: magicalDictionary.serviceChannel, body: commandData, ...options },
       null,
-      force,
     );
 
     const responseCommandData: IRfpServiceData<Partial<OutputData>> = {

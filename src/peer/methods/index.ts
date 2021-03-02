@@ -1,7 +1,4 @@
-export * from './checkConnection';
-export * from './connect';
 export * from './createRequest';
-export * from './disconnect';
 export * from './emit';
 export * from './receive';
 export * from './send';
