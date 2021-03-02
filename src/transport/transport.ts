@@ -1,5 +1,4 @@
 import { EventEmitter } from '@berish/emitter';
-import { TransportNotSupportedSendError } from '../errors';
 
 import type { TransportPlugin } from './transportPlugin';
 import type { Peer } from '../peer';
