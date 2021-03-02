@@ -2,21 +2,24 @@ import { getScope, StatefulObject } from '@berish/stateful';
 import type { PeerStoreSetValueData } from './setValueRemote';
 
 import { getCommandName, PeerStoreCommandEnum } from './getCommandName';
-import { StoreScopeNotFoundError } from '../../errors';
 
 export function reactionSetValueRemote<T extends object>(store: StatefulObject<T>, callback) {
   const scope = getScope(store);
-  if (!scope) throw new StoreScopeNotFoundError();
+  if (!scope) throw new TypeError('PeerStore scope is not found');
 
   const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeName);
 
-  const receiveHash = scope.serviceChannel.receive<PeerStoreSetValueData>(commandName, ({ serviceData }) => {
-    scope.logger('reactionSetValueRemote').info(serviceData);
-    const { props, value } = serviceData;
-    callback(props, value);
-  });
+  const receiveHash = scope.peer.serviceChannel.receive<PeerStoreSetValueData>(
+    'store',
+    commandName,
+    ({ serviceData }) => {
+      scope.logger('reactionSetValueRemote').info(serviceData);
+      const { props, value } = serviceData;
+      callback(props, value);
+    },
+  );
 
   return () => {
-    scope.serviceChannel.unreceive(receiveHash);
+    scope.peer.serviceChannel.unreceive(receiveHash);
   };
 }

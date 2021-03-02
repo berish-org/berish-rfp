@@ -1,7 +1,7 @@
 import type { Peer } from '../../../peer';
 import type { IFunctionPrint } from '../plugin';
 
-import { PeerIsDisconnectedError } from '../../../errors';
+import { ConnectionError } from '../../../errors';
 
 /**
  * Метод, который выполняет вызов удаленной функции по отпечатку
@@ -17,5 +17,5 @@ export async function executeRemoteFunction(
     const result = await peer.send({ path: printId, body: executeArgs || [], aside });
     return result.body;
   }
-  throw new PeerIsDisconnectedError();
+  throw new ConnectionError('Peer is disconnected');
 }

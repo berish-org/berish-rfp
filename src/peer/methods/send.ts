@@ -7,12 +7,16 @@ import { createRequest } from './createRequest';
 import { waitUnblockAll } from './waitUnblockAll';
 import { wait } from './wait';
 import { serberSerialize } from './serberSerialize';
+import { ConnectionError } from '../../errors';
 
 export async function send<Resolve = any, Data = any>(
   peer: Peer,
   outcomeChunk: PeerChunk<Data>,
   incomeChunk?: PeerChunk<any>,
+  force?: boolean,
 ) {
+  if (!peer.isConnected && !force) throw new ConnectionError('Peer is disconnected');
+
   outcomeChunk = outcomeChunk && fillChunk(outcomeChunk);
   incomeChunk = incomeChunk && fillChunk(incomeChunk);
 

@@ -19,7 +19,13 @@ export async function setValueRemote<T extends object>(
   try {
     const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeName);
     scope.logger('setValueRemote').info(props, value);
-    await scope.serviceChannel.send<PeerStoreSetValueData, boolean>(commandName, { props, value }, { isBlocker: true });
+
+    await scope.peer.serviceChannel.send<PeerStoreSetValueData, boolean>(
+      'store',
+      commandName,
+      { props, value },
+      { isBlocker: true },
+    );
   } catch (err) {
     scope.logger.error('remote store is not connected');
   }

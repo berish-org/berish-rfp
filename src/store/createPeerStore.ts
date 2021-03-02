@@ -36,8 +36,6 @@ export function createPeerStore<T extends object>(
   scope.setStateRemote = (state) => setStateRemote(store, state);
 
   scope.peer = peer;
-  scope.serviceChannel = ServiceChannel.getServiceChannel('store');
-  scope.serviceChannel.setPeer(peer);
 
   return store;
 }

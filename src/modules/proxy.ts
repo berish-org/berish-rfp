@@ -28,12 +28,12 @@ class ProxyServer {
 
   public start(pharse: string) {
     this._phrase = pharse;
-    return this._serviceChannel.receive<string>(serviceCommands.connect, async ({ chunk, peer, serviceData }) => {
-      if (this._phrase !== serviceData) throw new Error('Phrase is not correct');
-      peer.logger(serviceModuleName)('start').info(serviceData);
-      // await this.reconnectAll(peer.pull);
-      return true;
-    });
+    // return this._serviceChannel.receive<string>(serviceCommands.connect, async ({ chunk, peer, serviceData }) => {
+    //   if (this._phrase !== serviceData) throw new Error('Phrase is not correct');
+    //   peer.logger(serviceModuleName)('start').info(serviceData);
+    //   // await this.reconnectAll(peer.pull);
+    //   return true;
+    // });
   }
 
   public async reconnectAll(pull: PeerPull) {
@@ -55,11 +55,11 @@ export class Proxy {
   public client: ProxyClient = null;
   public server: ProxyServer = null;
 
-  private _serviceChannel: ServiceChannel = ServiceChannel.getServiceChannel(serviceModuleName);
+  // private _serviceChannel: ServiceChannel = ServiceChannel.getServiceChannel(serviceModuleName);
 
   constructor(currentPeer: Peer) {
-    this._serviceChannel = this._serviceChannel.setPeer(currentPeer);
-    this.client = new ProxyClient(this._serviceChannel);
-    this.server = new ProxyServer(this._serviceChannel);
+    // this._serviceChannel = this._serviceChannel.setPeer(currentPeer);
+    // this.client = new ProxyClient(this._serviceChannel);
+    // this.server = new ProxyServer(this._serviceChannel);
   }
 }

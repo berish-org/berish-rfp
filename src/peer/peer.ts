@@ -25,14 +25,15 @@ export class Peer {
   private _connectionId: string = null;
   private _blockersChunks: PeerChunk<any>[] = null;
   private _serberInstance: typeof serberWithPlugins = null;
-  private _serviceChannel: ServiceChannel = null;
+
+  private _serviceChannel: ServiceChannel = new ServiceChannel(this);
   private _receiveEmitter: PeerReceiveEmitter = getReceiveEmitter();
   private _emitter: PeerEmitter = getEmitter();
 
   constructor(params?: PeerParams) {
     const { logger, name } = params || {};
 
-    this._logger = logger || getConsoleLogger();
+    this._logger = logger || getConsoleLogger(name);
     this._name = name || undefined;
   }
 
@@ -75,13 +76,12 @@ export class Peer {
     return this._emitter;
   }
 
-  public get isConnected() {
-    return !!this._connectionId;
+  public get serviceChannel() {
+    return this._serviceChannel;
   }
 
-  public get serviceChannel() {
-    if (!this._serviceChannel) this._serviceChannel = ServiceChannel.getServiceChannel('main').setPeer(this);
-    return this._serviceChannel;
+  public get isConnected() {
+    return !!this._connectionId;
   }
 
   public setLogger(logger: PeerLogger) {

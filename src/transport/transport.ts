@@ -1,5 +1,5 @@
 import { EventEmitter } from '@berish/emitter';
-import { TransportAdapterEmptyError, TransportNameEmptyError, TransportNotSupportedSendError } from '../errors';
+import { TransportNotSupportedSendError } from '../errors';
 
 import type { TransportPlugin } from './transportPlugin';
 import type { Peer } from '../peer';
@@ -39,8 +39,8 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
   private _emitter: EventEmitter<PeerTransportEventEmitterMap> = null;
 
   constructor(transportName: string, transportAdapter: Adapter, plugins?: TransportPlugin[]) {
-    if (!transportName) throw new TransportNameEmptyError();
-    if (!transportAdapter) throw new TransportAdapterEmptyError();
+    if (!transportName) throw new TypeError('Peer transport name is null');
+    if (!transportAdapter) throw new TypeError('Peer transport adapter is null');
 
     this._transportName = transportName;
     this._transportAdapter = transportAdapter;

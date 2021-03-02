@@ -9,7 +9,7 @@ export async function setStateRemote<T extends object>(store: StatefulObject<T>,
   try {
     const commandName = getCommandName(PeerStoreCommandEnum.setState, scope.storeName);
     scope.logger('setStateRemote').info(state);
-    await scope.serviceChannel.send<Partial<T>, boolean>(commandName, state, { isBlocker: true });
+    await scope.peer.serviceChannel.send<Partial<T>, boolean>('store', commandName, state, { isBlocker: true });
   } catch (err) {
     scope.logger('setStateRemote').error(err);
   }

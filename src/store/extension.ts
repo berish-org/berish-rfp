@@ -11,7 +11,6 @@ declare module '@berish/stateful/build/types' {
     storeType: PeerStoreType;
     logger: PeerLogger;
     peer: Peer;
-    serviceChannel: ServiceChannel;
 
     isConnected: boolean;
     connect: () => Promise<void>;

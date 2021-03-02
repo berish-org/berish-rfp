@@ -1,7 +1,5 @@
 import { StatefulObject, getScope, getPrivateScope, listenChange } from '@berish/stateful';
 
-import { StoreScopeNotFoundError } from '../../errors';
-
 import { sync } from './sync';
 import { reactionSetStateRemote } from './reactionSetStateRemote';
 import { reactionSetValueRemote } from './reactionSetValueRemote';
@@ -11,7 +9,7 @@ export async function connect<T extends object>(store: StatefulObject<T>) {
   const scope = getScope(store);
   const privateScope = getPrivateScope(store);
 
-  if (!scope) throw new StoreScopeNotFoundError();
+  if (!scope) throw new TypeError('PeerStore scope is not found');
 
   if (!scope.isConnected) {
     privateScope.remoteChanges = [];
