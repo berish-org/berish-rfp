@@ -1,5 +1,5 @@
-import { ServiceChannel } from '../modules';
-import type { PeerTransport } from '../transport';
+import { ServiceChannel } from '../serviceChannel';
+import { PeerTransport, PeerConnection } from '../transport';
 
 import type { PeerLogger } from '../logger';
 import { getConsoleLogger } from '../logger';
@@ -8,12 +8,13 @@ import type { PeerEmitter, PeerReceiveEmitter } from '../emitter';
 import { getEmitter, getReceiveEmitter } from '../emitter';
 
 import { InternalPluginsType, internalPlugins, serberWithPlugins } from '../serber';
-import { receive, sendInitial, unreceive, unreceiveAll } from './methods';
 import type { PeerChunk } from '../chunk';
-import { createRequest } from './methods';
+import { createRequest } from './request';
 import { PeerReceive } from './receiveType';
+import { connect, disconnect } from './connection';
 import { ConnectionError } from '../errors';
-import { PeerConnection } from '../connection';
+import { receive, unreceive, unreceiveAll } from './emit';
+import { sendInitial } from './send';
 
 export interface PeerParams {
   name?: string;
@@ -87,12 +88,43 @@ export class Peer {
     return this;
   }
 
-  public async connect(transport: PeerTransport<any>) {
-    await PeerConnection.connect(this, transport);
+  public async start(transport: PeerTransport<any>) {
+    try {
+      this.logger.info('connect.start');
+      await this.emitter.emitStateAsync('connect.start', null);
+
+      await this.stop();
+
+      this.connection = PeerConnection.create(transport, this);
+      this.connection.transportConnect();
+
+      await connect(this);
+
+      await this.emitter.emitStateAsync('connect.finish', null);
+      this.logger.info('connect.finish');
+    } catch (err) {
+      await this.emitter.emitAsync('error', err);
+    }
   }
 
-  public async disconnect() {
-    await PeerConnection.disconnect(this);
+  public async stop() {
+    try {
+      this.logger.info('disconnect.start');
+      await this.emitter.emitStateAsync('disconnect.start', null);
+
+      if (this.connection) {
+        this.connection.transportDisconnect();
+        this.connection = null;
+      }
+
+      await disconnect(this);
+
+      await this.emitter.emitStateAsync('disconnect.finish', null);
+      this.logger.info('disconnect.finish');
+    } catch (err) {
+      this.connection = null;
+      await this.emitter.emitAsync('error', err);
+    }
   }
 
   public setSerber(callback: (internalPlugins: InternalPluginsType) => typeof serberWithPlugins) {
@@ -114,6 +146,8 @@ export class Peer {
   }
 
   public async send<Resolve = any, Data = any>(outcomeChunk: PeerChunk<Data>) {
-    return sendInitial<Resolve, Data>(createRequest(this, outcomeChunk));
+    if (!this.connection) throw new ConnectionError('Peer is disconected');
+
+    return sendInitial<Resolve, Data>(this, outcomeChunk);
   }
 }

@@ -1,7 +1,6 @@
-import type { PeerNextResponse, Peer } from '../peer';
+import type { PeerNextResponse, Peer, PeerRequest } from '../peer';
 import type { PeerChunkBlockForce } from '../chunk';
-import { PeerRequest, send } from '../peer/methods';
-import { magicalDictionary } from '../constants';
+import { magicalDictionary } from '../const';
 
 export interface IRfpServiceData<T> {
   moduleName: string;
@@ -36,7 +35,6 @@ export class ServiceChannel {
     commandName: string,
     data?: InputData,
     options?: PeerChunkBlockForce,
-    force?: boolean,
   ) {
     options = options || {};
 
@@ -45,11 +43,7 @@ export class ServiceChannel {
       commandName,
       data,
     };
-    const response = await send(
-      this.peer,
-      { path: magicalDictionary.serviceChannel, body: commandData, ...options },
-      null,
-    );
+    const response = await this.peer.send({ path: magicalDictionary.serviceChannel, body: commandData, ...options });
 
     const responseCommandData: IRfpServiceData<Partial<OutputData>> = {
       moduleName,

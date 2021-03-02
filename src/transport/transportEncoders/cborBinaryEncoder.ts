@@ -1,4 +1,4 @@
-import type { PeerTransportBinaryEncoder } from './transport';
+import type { PeerTransportBinaryEncoder } from '../transport';
 
 export const cborBinaryEncoder: PeerTransportBinaryEncoder = {
   encode: (data) => data && (getCbor().encodeAsync(data) as Promise<Buffer>),

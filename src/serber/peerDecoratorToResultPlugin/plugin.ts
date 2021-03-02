@@ -1,7 +1,7 @@
-import { ISerberPlugin } from '@berish/serber';
-import { PeerRequest } from '../../peer/methods';
-import { isPeerDecorator } from './peerDecorator/methods';
-import { PeerDecorator } from './peerDecorator/peerDecorator';
+import type { ISerberPlugin } from '@berish/serber';
+import type { PeerRequest } from '../../peer';
+
+import { PeerDecorator, isPeerDecorator } from './peerDecorator';
 
 /**
  * Параметр, который указывает PeerRequest

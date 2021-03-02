@@ -4,14 +4,13 @@ import { TransportNotSupportedSendError } from '../errors';
 import type { TransportPlugin } from './transportPlugin';
 import type { Peer } from '../peer';
 import type { PeerChunk } from '../chunk';
-import { cborBinaryEncoder } from './cborBinaryEncoder';
-import { jsonStringEncoder } from './jsonStringEncoder';
+import { cborBinaryEncoder, jsonStringEncoder } from './transportEncoders';
 
 export interface PeerTransportAdapter<T = any> {
   transport?: T;
 
-  send?(path: string, data: any): any;
-  subscribe?(path: string, cb: (data: any) => any): () => void;
+  send?(data: any): void;
+  subscribe?(cb: (data: any) => any): () => void;
 
   binaryFormat: 'string' | 'binary';
   binaryEncoder?: PeerTransportBinaryEncoder;
@@ -34,15 +33,13 @@ export interface PeerTransportEventEmitterMap {
 
 export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTransportAdapter<any>> {
   private _transportAdapter: Adapter = null;
-  private _transportName: string = null;
   private _plugins: TransportPlugin[] = null;
   private _emitter: EventEmitter<PeerTransportEventEmitterMap> = null;
+  private _isConnected: boolean = false;
 
-  constructor(transportName: string, transportAdapter: Adapter, plugins?: TransportPlugin[]) {
-    if (!transportName) throw new TypeError('Peer transport name is null');
+  constructor(transportAdapter: Adapter, plugins?: TransportPlugin[]) {
     if (!transportAdapter) throw new TypeError('Peer transport adapter is null');
 
-    this._transportName = transportName;
     this._transportAdapter = transportAdapter;
     this._plugins = plugins || [];
     this._emitter = new EventEmitter();
@@ -60,31 +57,34 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
     return this.transportAdapter.stringEncoder || jsonStringEncoder;
   }
 
-  public get transportName() {
-    return this._transportName;
-  }
-
   public get plugins() {
     return this._plugins || [];
   }
 
   public async send(peer: Peer, data: PeerChunk<any>) {
-    if (!this.transportAdapter.send) throw new TransportNotSupportedSendError();
+    if (!this.transportAdapter.send) throw new TypeError('Transport adapter send is null');
 
-    const beforeSend = await this._beforeSend(peer, data);
-    return this.transportAdapter.send(this.transportName, beforeSend);
+    try {
+      const beforeSend = await this._beforeSend(peer, data);
+      await this.transportAdapter.send(beforeSend);
+      return true;
+    } catch (err) {
+      // IGNORE
+      return false;
+    }
   }
 
   public subscribe(peer: Peer, callback: (data: PeerChunk<any>) => void) {
     return this._emitter.cacheSubscribe<any>(
       'subscribe',
-      (callback) => this.transportAdapter.subscribe(this._transportName, callback),
+      (callback) => this.transportAdapter.subscribe(callback),
       async (data) => {
         try {
           const __beforeResponse = await this._beforeResponse(peer, data);
           callback(__beforeResponse);
         } catch (err) {
           // Ошибка на транспортном уровне
+          // IGNORE
         }
       },
     );

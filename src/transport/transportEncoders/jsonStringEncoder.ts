@@ -1,4 +1,4 @@
-import type { PeerTransportStringEncoder } from './transport';
+import type { PeerTransportStringEncoder } from '../transport';
 
 export const jsonStringEncoder: PeerTransportStringEncoder = {
   encode: (data) => {

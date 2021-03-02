@@ -1,5 +1,5 @@
 import type, { ITypeofHandler, TypeofResult } from '@berish/typeof';
-import { magicalDictionary } from '../constants';
+import { magicalDictionary } from '../const';
 
 /**
  * Параметр, который является Peer

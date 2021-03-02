@@ -1,4 +1,4 @@
-import { magicalDictionary } from '../../../constants';
+import { magicalDictionary } from '../../../const';
 
 export function setContextAside<T extends (...args) => any>(func: T, context: any) {
   const newFunc = (...args) => func(...args);

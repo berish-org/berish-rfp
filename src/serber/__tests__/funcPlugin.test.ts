@@ -2,7 +2,7 @@
 // import guid from 'berish-guid';
 // import Plugin from '../plugins/funcPlugin';
 
-// import { DeferredListSymbol, PeerSymbol } from '../../constants';
+// import { DeferredListSymbol, PeerSymbol } from '../../const';
 // import { deferredReceiveStart, IDeferredList } from '../funcConverter';
 // import { prepareIO } from './converter.test';
 

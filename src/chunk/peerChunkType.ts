@@ -3,8 +3,6 @@ export type PeerResponseStatusType = 'resolve' | 'reject' | 'initial';
 export interface PeerChunkId {
   /** Показывает идентификатор текущего chunk */
   chunkId?: string;
-  /** Показывает на какой chunk указывает текущий chunk */
-  replyId?: string;
 }
 
 export interface PeerChunkBody<Body> {

@@ -7,6 +7,7 @@ export interface PeerEmitterStateMap {
   'connect.finish': void;
   'disconnect.start': void;
   'disconnect.finish': void;
+  error: any;
   block: PeerChunk<any>;
   unblock: PeerChunk<any>;
   unblockAll: never;

@@ -1,5 +1,5 @@
-import type { PeerRequest } from '../../../peer/methods';
-import { magicalDictionary } from '../../../constants';
+import type { PeerRequest } from '../../../peer';
+import { magicalDictionary } from '../../../const';
 
 export function getArgumentsValues(printArgs: any[], argsValue: any[], request: PeerRequest) {
   return printArgs.map((m, i) => {

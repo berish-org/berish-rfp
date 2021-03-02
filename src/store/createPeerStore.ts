@@ -1,6 +1,5 @@
-import { createStateful, getScope, StatefulObject } from '@berish/stateful';
+import { getScope, StatefulObject } from '@berish/stateful';
 import type { Peer } from '../peer';
-import { ServiceChannel } from '../modules/serviceChannel';
 
 import {
   connect,

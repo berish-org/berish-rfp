@@ -1,6 +1,5 @@
 import '@berish/stateful/build/types';
 import type { Peer } from '../peer';
-import type { ServiceChannel } from '../modules';
 import type { PeerLogger } from '../logger';
 
 export type PeerStoreType = 'public' | 'private' | 'protected';

@@ -1,4 +1,4 @@
-import type { PeerRequest } from '../../../peer/methods';
+import type { PeerRequest } from '../../../peer/receiveType';
 import { isPeerDecorator, isArray } from './methods';
 
 export type PeerDecoratorFunctionValue<T> = T | PeerDecorator<T> | Promise<T> | Promise<PeerDecorator<T>>;

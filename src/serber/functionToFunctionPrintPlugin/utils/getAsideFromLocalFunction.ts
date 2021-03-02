@@ -1,4 +1,4 @@
-import { magicalDictionary } from '../../../constants';
+import { magicalDictionary } from '../../../const';
 import type { IFunction } from '../plugin';
 
 export function getAsideFromLocalFunction(func: IFunction) {

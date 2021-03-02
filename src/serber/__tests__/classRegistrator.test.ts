@@ -2,7 +2,7 @@
 // import guid from 'berish-guid';
 
 // import { prepareIO } from '../../__tests__/context.test';
-// import { RegistratorSymbol } from '../../constants';
+// import { RegistratorSymbol } from '../../const';
 // import * as classRegistrator from '../classRegistrator';
 // import * as Plugins from '../plugins';
 

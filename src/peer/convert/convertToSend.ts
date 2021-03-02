@@ -1,5 +1,5 @@
 import type { Peer } from '../peer';
-import { fillChunk, PeerChunk } from '../../chunk';
+import { fillChunk } from '../../chunk';
 import {
   SYMBOL_SERBER_PEER,
   SYMBOL_SERBER_REGISTRATOR,
@@ -9,10 +9,11 @@ import {
 } from '../../serber';
 import { SYMBOL_SERBER_REQUEST } from '../../serber/peerDecoratorToResultPlugin';
 
-import { PeerRequest } from './createRequest';
+import { createRequest } from '../request';
+import { PeerRequest } from '../receiveType';
 
-export async function serberSerialize(
-  outcomeRequest: PeerRequest<Peer, any>,
+export async function convertToSend<Data = any>(
+  outcomeRequest: PeerRequest<Peer, Data>,
   deferredList: DeferredReceiveList,
   incomeRequest?: PeerRequest<Peer, any>,
 ) {
@@ -44,5 +45,5 @@ export async function serberSerialize(
     [SYMBOL_SERBER_CHUNK_REPLY_PATH]: replyPath,
     [SYMBOL_SERBER_REQUEST]: incomeRequest,
   });
-  return fillChunk({ body: preChunkBody, aside: preChunkAside, ...preChunkMeta });
+  return createRequest<Peer, Data>(peer, fillChunk({ body: preChunkBody, aside: preChunkAside, ...preChunkMeta }));
 }

@@ -4,9 +4,13 @@ export interface DeferredReceiveList {
 
 export function deferredReceiveStart(deferredFuncs: DeferredReceiveList) {
   const keys = Object.keys(deferredFuncs);
-  for (const key of keys) {
-    setImmediate(() => {
-      deferredFuncs[key]();
-    });
-  }
+  keys.forEach((key) =>
+    setTimeout(() => {
+      try {
+        deferredFuncs[key]();
+      } catch (err) {
+        // IGNORE
+      }
+    }, 0),
+  );
 }
