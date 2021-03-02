@@ -27,7 +27,7 @@ export async function send<Resolve = any, Data = any>(
   }
 
   const deferredList: DeferredReceiveList = {};
-  const outcomeRawChunk = serberSerialize(outcomeRequest, deferredList, incomeRequest);
+  const outcomeRawChunk = await serberSerialize(outcomeRequest, deferredList, incomeRequest);
   deferredReceiveStart(deferredList);
 
   peer.transport.send(peer, outcomeRawChunk);
