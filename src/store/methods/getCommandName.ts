@@ -5,6 +5,6 @@ export enum PeerStoreCommandEnum {
   setState = 'setState',
 }
 
-export function getCommandName(cmd: PeerStoreCommandEnum, type: PeerStoreType) {
-  return `[${type}]:${cmd}`;
+export function getCommandName(cmd: PeerStoreCommandEnum, storeName: string) {
+  return `[${storeName}]:${cmd}`;
 }

@@ -13,7 +13,7 @@ export function reactionSetStateRemote<T extends object>(
   if (!scope) throw new StoreScopeNotFoundError();
   if (!callback) throw new TypeError('PeerStore callback is null');
 
-  const commandName = getCommandName(PeerStoreCommandEnum.setState, scope.storeType);
+  const commandName = getCommandName(PeerStoreCommandEnum.setState, scope.storeName);
   const receiveHash = scope.serviceChannel.receive<Partial<T>>(commandName, ({ serviceData }) => {
     scope.logger('reactionSetStateRemote').info(serviceData);
     callback(serviceData);

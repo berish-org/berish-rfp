@@ -13,12 +13,18 @@ import {
 } from './methods';
 import type { PeerStoreType } from './extension';
 
-export function createStore<T extends object>(peer: Peer, store: StatefulObject<T>, storeType: PeerStoreType) {
+export function createStore<T extends object>(
+  peer: Peer,
+  storeName: string,
+  storeType: PeerStoreType,
+  store: StatefulObject<T>,
+) {
   const scope = getScope(store);
 
+  scope.storeName = storeName;
   scope.peer = peer;
   scope.storeType = storeType;
-  scope.logger = scope.peer.logger('store')(scope.storeType);
+  scope.logger = scope.peer.logger('store')(`${scope.storeName} ${scope.storeType}`);
   scope.isConnected = false;
 
   scope.connect = () => connect(store);

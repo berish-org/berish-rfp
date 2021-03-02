@@ -17,7 +17,7 @@ export async function setValueRemote<T extends object>(
 
   if (scope.storeType === 'private') return void 0;
   try {
-    const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeType);
+    const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeName);
     scope.logger('setValueRemote').info(props, value);
     await scope.serviceChannel.send<PeerStoreSetValueData, boolean>(commandName, { props, value }, { isBlocker: true });
   } catch (err) {

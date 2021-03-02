@@ -8,7 +8,7 @@ export function reactionSetValueRemote<T extends object>(store: StatefulObject<T
   const scope = getScope(store);
   if (!scope) throw new StoreScopeNotFoundError();
 
-  const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeType);
+  const commandName = getCommandName(PeerStoreCommandEnum.setValue, scope.storeName);
 
   const receiveHash = scope.serviceChannel.receive<PeerStoreSetValueData>(commandName, ({ serviceData }) => {
     scope.logger('reactionSetValueRemote').info(serviceData);

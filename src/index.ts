@@ -6,3 +6,4 @@ export * from './peer';
 export * from './modules';
 export * from './serber';
 export * from './transport';
+export * from './store';

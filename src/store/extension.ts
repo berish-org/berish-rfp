@@ -7,6 +7,7 @@ export type PeerStoreType = 'public' | 'private' | 'protected';
 
 declare module '@berish/stateful/build/types' {
   export interface IStatefulScope<T> {
+    storeName: string;
     storeType: PeerStoreType;
     logger: PeerLogger;
     peer: Peer;
