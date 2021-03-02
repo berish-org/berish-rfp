@@ -1,6 +1,6 @@
 {
   "name": "@berish/rfp",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Binary secure transport organization protocol for peer communication using function fingerprints",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
@@ -37,7 +37,7 @@
     "test:a": "jest --config jestconfig.json",
     "test": "echo test",
     "test:dev": "jest --config jestconfig.json --watch --verbose=false",
-    "build": "tsc -p .",
+    "build": "rm -rf build && tsc -p .",
     "format": "prettier --write \"src/**/*.(t|j)s\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
