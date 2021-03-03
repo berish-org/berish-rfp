@@ -109,18 +109,18 @@ export class Peer {
 
   public async stop() {
     try {
-      this.logger.info('disconnect.start');
-      await this.emitter.emitStateAsync('disconnect.start', null);
-
       if (this.connection) {
+        this.logger.info('disconnect.start');
+        await this.emitter.emitStateAsync('disconnect.start', null);
+
         this.connection.transportDisconnect();
         this.connection = null;
+
+        await disconnect(this);
+
+        await this.emitter.emitStateAsync('disconnect.finish', null);
+        this.logger.info('disconnect.finish');
       }
-
-      await disconnect(this);
-
-      await this.emitter.emitStateAsync('disconnect.finish', null);
-      this.logger.info('disconnect.finish');
     } catch (err) {
       this.connection = null;
       await this.emitter.emitAsync('error', err);
@@ -146,7 +146,7 @@ export class Peer {
   }
 
   public async send<Resolve = any, Data = any>(outcomeChunk: PeerChunk<Data>) {
-    if (!this.connection) throw new ConnectionError('Peer is disconected');
+    if (!this.connection) throw new ConnectionError('Peer is disconnected');
 
     return sendInitial<Resolve, Data>(this, outcomeChunk);
   }
