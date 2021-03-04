@@ -90,6 +90,9 @@ export class Peer {
 
   public async start(transport: PeerTransport<any>) {
     try {
+      this.emitter.removeState('disconnect.start');
+      this.emitter.removeState('disconnect.finish');
+
       this.logger.info('connect.start');
       await this.emitter.emitStateAsync('connect.start', null);
 
@@ -110,6 +113,9 @@ export class Peer {
   public async stop() {
     try {
       if (this.connection) {
+        this.emitter.removeState('connect.start');
+        this.emitter.removeState('connect.finish');
+
         this.logger.info('disconnect.start');
         await this.emitter.emitStateAsync('disconnect.start', null);
 
