@@ -94,11 +94,11 @@ export class Peer {
       this.emitter.removeState('disconnect.finish');
       await this.stop();
 
-      this.logger.info('connect.start');
-      await this.emitter.emitStateAsync('connect.start', null);
-
       this.connection = PeerConnection.create(transport, this);
       this.connection.transportConnect();
+
+      this.logger.info('connect.start');
+      await this.emitter.emitStateAsync('connect.start', null);
 
       await connect(this);
 
