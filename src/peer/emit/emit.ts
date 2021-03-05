@@ -11,6 +11,8 @@ export async function emit(rawRequest: PeerRequest<Peer, any>) {
     if (!rawRequest.peer) throw new TypeError('receive invalid data: peer');
     if (!rawRequest.chunk) throw new TypeError('receive invalid data: chunk');
 
+    await rawRequest.peer.emitter.waitEvent('connect.start');
+
     const incomeRequest = await convertFromReceive(rawRequest);
     const { peer, chunk } = incomeRequest;
 
