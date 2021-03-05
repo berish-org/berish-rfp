@@ -68,6 +68,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
       await this.transportAdapter.send(beforeSend);
       return true;
     } catch (err) {
+      await peer.emitter.emitAsync('error', err);
       // IGNORE
       return false;
     }
@@ -84,6 +85,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
         } catch (err) {
           // Ошибка на транспортном уровне
           // IGNORE
+          await peer.emitter.emitAsync('error', err);
         }
       },
     );
