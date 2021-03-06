@@ -1,4 +1,5 @@
 import { fillChunk, PeerChunk } from '../../chunk';
+import { PeerDecoratorException } from '../../errors';
 import { Peer } from '../peer';
 import { sendRaw } from '../sendRaw';
 import { sendReject } from './sendReject';
@@ -22,6 +23,9 @@ export async function sendResolve(peer: Peer, outcomeData: any, incomeChunk: Pee
 
     peer.logger('peer')('sendResolve').info(outcomeChunk);
   } catch (err) {
+    if (typeof err === 'object' && err instanceof PeerDecoratorException) {
+      await sendReject(peer, err.err, incomeChunk);
+    }
     return void 0;
   }
 }

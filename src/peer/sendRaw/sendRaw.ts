@@ -32,43 +32,31 @@ export async function sendRaw<Resolve = any, Data = any>(
   // Решение всех блокирующих запросов
   await blockStep(peer, outcomeChunk);
 
-  try {
-    const { outcomeRequestConverted, deferredList } = await convertStep(outcomeRequest, incomeRequest);
-    // Конвертация данных
+  const { outcomeRequestConverted, deferredList } = await convertStep(outcomeRequest, incomeRequest);
+  // Конвертация данных
 
-    // Вызов отложенных команд
-    deferredReceiveStart(deferredList);
+  // Вызов отложенных команд
+  deferredReceiveStart(deferredList);
 
-    if (!checkConnection(peer, outcomeChunk)) return void 0;
+  if (!checkConnection(peer, outcomeChunk)) return void 0;
 
-    // Транспортная отправка данных
-    const sended = await peer.connection.transport.send(peer, outcomeRequestConverted.chunk);
+  // Транспортная отправка данных
+  const sended = await peer.connection.transport.send(peer, outcomeRequestConverted.chunk);
 
-    if (!sended) throw new ConnectionError('send is not executed');
+  if (!sended) throw new ConnectionError('send is not executed');
 
-    // Если не нужен ответ, то прерываем
-    if (outcomeChunk.notWaiting) {
-      peer.logger('send')('not wait').info(outcomeChunk.chunkId);
-      return void 0;
-    }
-
-    peer.logger('send')('wait').info(outcomeChunk.chunkId);
-
-    const result = await waitResponse<Resolve, Data>(peer, outcomeChunk);
-
-    // Разблокируем запросы
-    await unblockStep(peer, outcomeChunk);
-
-    return result;
-  } catch (err) {
-    if (
-      (outcomeChunk.status === 'resolve' || outcomeChunk.status === 'reject') &&
-      incomeChunk &&
-      typeof err === 'object' &&
-      err instanceof PeerDecoratorException
-    ) {
-      return sendReject(peer, err, incomeChunk);
-    }
-    throw err;
+  // Если не нужен ответ, то прерываем
+  if (outcomeChunk.notWaiting) {
+    peer.logger('send')('not wait').info(outcomeChunk.chunkId);
+    return void 0;
   }
+
+  peer.logger('send')('wait').info(outcomeChunk.chunkId);
+
+  const result = await waitResponse<Resolve, Data>(peer, outcomeChunk);
+
+  // Разблокируем запросы
+  await unblockStep(peer, outcomeChunk);
+
+  return result;
 }
