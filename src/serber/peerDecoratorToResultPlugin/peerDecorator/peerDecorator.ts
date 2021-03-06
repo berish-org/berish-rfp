@@ -1,5 +1,5 @@
 import type { PeerRequest } from '../../../peer/receiveType';
-import { isPeerDecorator, isArray } from './methods';
+import { isArray } from './methods';
 
 export type PeerDecoratorFunctionValue<T> = T | PeerDecorator<T> | Promise<T> | Promise<PeerDecorator<T>>;
 
@@ -17,8 +17,25 @@ export type PeerDecoratorValue<T> = T extends PeerDecorator<infer U> ? U : T;
 export class PeerDecorator<T> {
   private _fn: PeerDecoratorFunction<T> = undefined;
 
-  public static is(value: any): value is PeerDecorator<any> {
-    return isPeerDecorator(value);
+  public static async execute<T>(peerDecorator: PeerDecorator<T>, request: PeerRequest): Promise<T> {
+    peerDecorator = PeerDecorator.is(peerDecorator) ? peerDecorator : PeerDecorator.resolve(peerDecorator);
+
+    if (peerDecorator._fn) {
+      try {
+        const data = await peerDecorator._fn(request);
+        return peerDecorator.final(request, data);
+      } catch (err) {
+        const data = await peerDecorator.final(request, err);
+        throw data;
+      }
+    }
+
+    return undefined;
+  }
+
+  public static is<T>(value: any): value is PeerDecorator<T> {
+    if (value && typeof value === 'object' && value instanceof PeerDecorator) return true;
+    return false;
   }
 
   public static create<T>(fn: PeerDecoratorFunction<T>) {
@@ -26,7 +43,7 @@ export class PeerDecorator<T> {
   }
 
   public static resolve<T>(value: PeerDecoratorFunctionValue<T>): PeerDecorator<T> {
-    if (isPeerDecorator(value)) {
+    if (PeerDecorator.is(value)) {
       return value;
     }
 
@@ -45,7 +62,7 @@ export class PeerDecorator<T> {
     return new PeerDecorator((request) => {
       if (!isArray(arr)) throw new TypeError('PeerDecorator.all accepts an array');
 
-      return Promise.all(arr.map((item) => PeerDecorator.resolve(item).call(request)));
+      return Promise.all(arr.map((item) => PeerDecorator.execute(PeerDecorator.resolve(item), request)));
     }) as PeerDecorator<PeerDecoratorValue<T>[]>;
   }
 
@@ -57,7 +74,7 @@ export class PeerDecorator<T> {
 
       for (const item of arr) {
         try {
-          const value = await PeerDecorator.resolve(item).call(request);
+          const value = await PeerDecorator.execute(PeerDecorator.resolve(item), request);
           data.push(value);
         } catch (err) {
           throw err;
@@ -72,7 +89,7 @@ export class PeerDecorator<T> {
     return new PeerDecorator((request) => {
       if (!isArray(arr)) throw new TypeError('PeerDecorator.race accepts an array');
 
-      return Promise.race(arr.map((item) => PeerDecorator.resolve(item).call(request)));
+      return Promise.race(arr.map((item) => PeerDecorator.execute(PeerDecorator.resolve(item), request)));
     }) as PeerDecorator<T extends PeerDecorator<infer U> ? U : T>;
   }
 
@@ -84,7 +101,7 @@ export class PeerDecorator<T> {
 
   public next<TNextResult = T>(onfulfilled?: PeerDecoratorNextFunction<T, TNextResult>): PeerDecorator<TNextResult> {
     const newDecorator = new PeerDecorator<TNextResult>(async (request) => {
-      const result = await this.call(request);
+      const result = await PeerDecorator.execute(this, request);
       if (!onfulfilled) return result;
 
       return onfulfilled(request, result) as any;
@@ -95,7 +112,7 @@ export class PeerDecorator<T> {
   public catch<TNextResult = T>(onrejected?: PeerDecoratorCatchFunction<TNextResult>) {
     const newDecorator = new PeerDecorator<TNextResult | T>(async (request) => {
       try {
-        const result = await this.call(request);
+        const result = await PeerDecorator.execute(this, request);
         return result;
       } catch (err) {
         if (!onrejected) throw err;
@@ -106,29 +123,13 @@ export class PeerDecorator<T> {
     return newDecorator;
   }
 
-  public async call(request: PeerRequest): Promise<T> {
-    if (this._fn) {
-      try {
-        const data = await this._fn(request);
-        return this.final(request, data, 'resolve');
-      } catch (err) {
-        const data = await this.final(request, err, 'reject');
-        throw data;
-      }
-    }
-
-    return undefined;
-  }
-
-  private async final(request: PeerRequest, data: any, status: 'resolve' | 'reject') {
+  private async final(request: PeerRequest, data: any) {
     if (this === data) throw new TypeError('A PeerDecorator cannot be resolved with itself');
 
-    while (isPeerDecorator(data)) {
-      data = await data.call(request);
+    while (PeerDecorator.is(data)) {
+      data = await PeerDecorator.execute(data, request);
     }
 
-    if (status === 'resolve' || status === 'reject') return data;
-
-    return undefined;
+    return data;
   }
 }

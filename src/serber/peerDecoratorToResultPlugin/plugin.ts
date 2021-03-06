@@ -1,7 +1,7 @@
 import type { ISerberPlugin } from '@berish/serber';
 import type { PeerRequest } from '../../peer';
 
-import { PeerDecorator, isPeerDecorator } from './peerDecorator';
+import { PeerDecorator } from './peerDecorator';
 
 /**
  * Параметр, который указывает PeerRequest
@@ -13,13 +13,13 @@ export interface PeerDecoratorToResultPluginOptions {
 }
 
 export const peerDecoratorToResultPlugin: ISerberPlugin<PeerDecorator<any>, any, PeerDecoratorToResultPluginOptions> = {
-  isForSerialize: (obj) => isPeerDecorator(obj),
+  isForSerialize: (obj) => obj && PeerDecorator.is(obj),
   isForDeserialize: () => false,
   isAlreadyDeserialized: (obj) => peerDecoratorToResultPlugin.isForSerialize(obj as PeerDecorator<any>),
   serializeAsync: async (obj, params) => {
     if (!params[SYMBOL_SERBER_REQUEST]) return undefined;
-    const result = await obj.call(params[SYMBOL_SERBER_REQUEST]);
 
+    const result = await PeerDecorator.execute(obj, params[SYMBOL_SERBER_REQUEST]);
     return result;
   },
 };
