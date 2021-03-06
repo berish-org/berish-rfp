@@ -12,6 +12,7 @@ export async function convertStep<Resolve = any, Data = any>(outcomeRequest: Pee
 
     return { deferredList, outcomeRequestConverted };
   } catch (err) {
+    if (typeof err === 'object' && err instanceof PeerDecoratorException) throw err;
     throw new ConnectionError('send can`t convert data');
   }
 }
