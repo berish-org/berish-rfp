@@ -70,7 +70,7 @@
     "@berish/emitter": "^1.3.0",
     "@berish/linq": "^1.1.0",
     "@berish/pathof": "^1.1.0",
-    "@berish/serber": "^1.3.0",
+    "@berish/serber": "^1.4.0",
     "berish-guid": "^2.0.0",
     "cbor": "^5.1.0",
     "cbor-js": "^0.1.0",

@@ -15,7 +15,7 @@ export const internalPlugins = {
   errorToErrorPrintPlugin,
 };
 
-export const serberWithPlugins = new Serber()
+export const serberWithPlugins = new Serber({ throwWhenError: true })
   .addPlugin(plugins.undefinedPlugin)
   .addPlugin(plugins.nullPlugin)
   .addPlugin(plugins.boolPlugin)

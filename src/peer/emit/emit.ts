@@ -26,7 +26,7 @@ export async function emit(rawRequest: PeerRequest<Peer, any>) {
       try {
         const result = await nextPromise((next) => event.callback({ request: incomeRequest, next }, event.eventHash));
         if (result === SYMBOL_NEXT_STEP) continue;
-        else return sendResolve(peer, result, chunk);
+        return sendResolve(peer, result, chunk);
       } catch (err) {
         return sendReject(peer, err, chunk);
       }

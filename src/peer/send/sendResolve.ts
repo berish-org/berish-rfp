@@ -1,6 +1,7 @@
 import { fillChunk, PeerChunk } from '../../chunk';
 import { Peer } from '../peer';
 import { sendRaw } from '../sendRaw';
+import { sendReject } from './sendReject';
 
 export async function sendResolve(peer: Peer, outcomeData: any, incomeChunk: PeerChunk<any>) {
   try {
@@ -21,6 +22,7 @@ export async function sendResolve(peer: Peer, outcomeData: any, incomeChunk: Pee
 
     peer.logger('peer')('sendResolve').info(outcomeChunk);
   } catch (err) {
+    await sendReject(peer, err, incomeChunk);
     return void 0;
   }
 }

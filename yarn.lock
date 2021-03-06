@@ -295,10 +295,10 @@
   resolved "https://registry.yarnpkg.com/@berish/pathof/-/pathof-1.1.0.tgz#6953d0a33ababacdd52a7acb5b8e4a3a20686bed"
   integrity sha512-0M36hB64AU3fR6soaT6oNHYBRHE99fwuaN0EREXKSp1bDcaYWpHiolCWy0bIZlnYrwH3rX62DrxMr8DpfZ1jww==
 
-"@berish/serber@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@berish/serber/-/serber-1.3.0.tgz#e813320ffbb770531a6364f751ee24ff01f41008"
-  integrity sha512-dbASs+GBztJol2dyhCXSpJTtXvcXF5wTeNxcAv61+N8mafxzaw5rNp2rF1Sb2BKMBtpB9CcwbHEWgOuPInwZQg==
+"@berish/serber@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@berish/serber/-/serber-1.4.0.tgz#faf310503e9de3347276701f3e704a211b9794bb"
+  integrity sha512-gEm8jqQccNtRkqNPto444oSPcXB+hJAsEyxqKHNNAWawGQdp7EKoHwkJY7B1007KEeZXIsDR3xWDgP+o6kXZQQ==
   dependencies:
     "@berish/linq" "^1.0.4"
     "@berish/pathof" "^1.1.0"
