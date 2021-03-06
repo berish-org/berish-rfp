@@ -35,7 +35,5 @@ export async function connect<T extends object>(store: StatefulObject<T>) {
     scope.isConnected = true;
 
     scope.logger.info('connected');
-
-    await sync(store);
   }
 }

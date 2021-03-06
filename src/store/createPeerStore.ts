@@ -41,7 +41,8 @@ export function createPeerStore<T extends object>(
 
   scope.peer = peer;
 
-  scope.peer.emitter.on('connect.finish', () => scope.connect());
+  scope.peer.emitter.on('connect.start', () => scope.connect());
+  scope.peer.emitter.on('connect.finish', () => scope.sync());
   scope.peer.emitter.on('disconnect.start', () => scope.disconnect());
 
   return store;
