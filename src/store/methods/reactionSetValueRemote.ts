@@ -3,7 +3,12 @@ import type { PeerStoreSetValueData } from './setValueRemote';
 
 import { getCommandName, PeerStoreCommandEnum } from './getCommandName';
 
-export function reactionSetValueRemote<T extends object>(store: StatefulObject<T>, callback) {
+export type ReactionSetValueRemoteCallback = (props: (string | number | symbol)[], value: any) => void | Promise<void>;
+
+export function reactionSetValueRemote<T extends object>(
+  store: StatefulObject<T>,
+  callback: ReactionSetValueRemoteCallback,
+) {
   const scope = getScope(store);
   if (!scope) throw new TypeError('PeerStore scope is not found');
 
@@ -12,10 +17,10 @@ export function reactionSetValueRemote<T extends object>(store: StatefulObject<T
   const receiveHash = scope.peer.serviceChannel.receive<PeerStoreSetValueData>(
     'store',
     commandName,
-    ({ serviceData }) => {
+    async ({ serviceData }) => {
       scope.logger('reactionSetValueRemote').info(serviceData);
       const { props, value } = serviceData;
-      callback(props, value);
+      await callback(props, value);
     },
   );
 

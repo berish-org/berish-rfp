@@ -1,7 +1,7 @@
 import { getScope, StatefulObject } from '@berish/stateful';
 import { getCommandName, PeerStoreCommandEnum } from './getCommandName';
 
-export type ReactionSetStateRemoteCallback<T> = (state: Partial<T>) => void;
+export type ReactionSetStateRemoteCallback<T> = (state: Partial<T>) => void | Promise<void>;
 
 export function reactionSetStateRemote<T extends object>(
   store: StatefulObject<T>,
@@ -13,9 +13,9 @@ export function reactionSetStateRemote<T extends object>(
   if (!callback) throw new TypeError('PeerStore callback is null');
 
   const commandName = getCommandName(PeerStoreCommandEnum.setState, scope.storeName);
-  const receiveHash = scope.peer.serviceChannel.receive<Partial<T>>('store', commandName, ({ serviceData }) => {
+  const receiveHash = scope.peer.serviceChannel.receive<Partial<T>>('store', commandName, async ({ serviceData }) => {
     scope.logger('reactionSetStateRemote').info(serviceData);
-    callback(serviceData);
+    await callback(serviceData);
   });
 
   return () => {
