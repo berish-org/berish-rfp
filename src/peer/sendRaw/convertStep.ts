@@ -1,4 +1,4 @@
-import { ConnectionError } from '../../errors';
+import { ConnectionError, PeerDecoratorException } from '../../errors';
 import { DeferredReceiveList, deferredReceiveStart } from '../../serber';
 
 import { convertToSend } from '../convert';

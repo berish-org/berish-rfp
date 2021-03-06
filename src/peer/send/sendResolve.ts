@@ -22,7 +22,6 @@ export async function sendResolve(peer: Peer, outcomeData: any, incomeChunk: Pee
 
     peer.logger('peer')('sendResolve').info(outcomeChunk);
   } catch (err) {
-    await sendReject(peer, err, incomeChunk);
     return void 0;
   }
 }

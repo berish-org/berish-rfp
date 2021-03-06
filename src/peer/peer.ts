@@ -19,7 +19,6 @@ import { sendInitial } from './send';
 export interface PeerParams {
   name?: string;
   logger?: PeerLogger;
-  sendRejectDeep?: number;
 }
 export class Peer {
   private _params: PeerParams = null;

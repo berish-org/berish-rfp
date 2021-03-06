@@ -1,4 +1,5 @@
 import type { ISerberPlugin } from '@berish/serber';
+import { PeerDecoratorException } from '../../errors';
 import { convertDataToSend, Peer, PeerRequest } from '../../peer';
 import { SYMBOL_SERBER_PEER } from '../abstract';
 import {
@@ -32,7 +33,12 @@ export const peerDecoratorToResultPlugin: ISerberPlugin<PeerDecorator<any>, any,
 
     if (!incomeRequest) return undefined;
 
-    const result = await PeerDecorator.execute(obj, incomeRequest);
+    let result: any = null;
+    try {
+      result = await PeerDecorator.execute(obj, incomeRequest);
+    } catch (err) {
+      throw new PeerDecoratorException(err);
+    }
     return convertDataToSend(peer, result, defferedList, incomeRequest);
   },
 };
