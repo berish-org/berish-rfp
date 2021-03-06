@@ -16,6 +16,10 @@ export const peerDecoratorToResultPlugin: ISerberPlugin<PeerDecorator<any>, any,
   isForSerialize: (obj) => isPeerDecorator(obj),
   isForDeserialize: () => false,
   isAlreadyDeserialized: (obj) => peerDecoratorToResultPlugin.isForSerialize(obj as PeerDecorator<any>),
-  serialize: (obj, params) => (params[SYMBOL_SERBER_REQUEST] ? obj.call(params[SYMBOL_SERBER_REQUEST]) : undefined),
-  serializeAsync: (obj, params) => peerDecoratorToResultPlugin.serialize(obj, params),
+  serializeAsync: async (obj, params) => {
+    if (!params[SYMBOL_SERBER_REQUEST]) return undefined;
+    const result = await obj.call(params[SYMBOL_SERBER_REQUEST]);
+
+    return result;
+  },
 };
