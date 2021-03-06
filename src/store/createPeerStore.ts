@@ -18,6 +18,11 @@ export function createPeerStore<T extends object>(
   storeType: PeerStoreType,
   store: StatefulObject<T>,
 ) {
+  if (!peer) throw new TypeError('createPeerStore peer is null');
+  if (!storeName) throw new TypeError('createPeerStore storeName is null');
+  if (!storeType) throw new TypeError('createPeerStore storeType is null');
+  if (!store) throw new TypeError('createPeerStore store is null');
+
   const scope = getScope(store);
 
   scope.storeName = storeName;
@@ -35,6 +40,9 @@ export function createPeerStore<T extends object>(
   scope.setStateRemote = (state) => setStateRemote(store, state);
 
   scope.peer = peer;
+
+  scope.peer.emitter.on('connect.finish', () => scope.connect());
+  scope.peer.emitter.on('disconnect.start', () => scope.disconnect());
 
   return store;
 }
