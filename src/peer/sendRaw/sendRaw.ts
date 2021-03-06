@@ -5,12 +5,11 @@ import { deferredReceiveStart } from '../../serber';
 
 import { createRequest } from '../request';
 import { waitResponse } from './waitResponse';
-import { ConnectionError, PeerDecoratorException } from '../../errors';
+import { ConnectionError } from '../../errors';
 import { checkConnection } from './checkConnection';
 import { convertStep } from './convertStep';
 import { blockStep } from './blockStep';
 import { unblockStep } from './unblockStep';
-import { sendReject } from '../send/sendReject';
 
 export async function sendRaw<Resolve = any, Data = any>(
   peer: Peer,

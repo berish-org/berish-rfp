@@ -10,6 +10,6 @@ export async function blockStep<Data = any>(peer: Peer, outcomeChunk: PeerChunk<
   // Добавление в список блокирующих запросов
   if (!outcomeChunk.isForce && outcomeChunk.isBlocker) {
     peer.blockersChunks.push(outcomeChunk);
-    await peer.emitter.emitAsync('block', outcomeChunk);
+    // await peer.emitter.emitAsync('block', outcomeChunk);
   }
 }

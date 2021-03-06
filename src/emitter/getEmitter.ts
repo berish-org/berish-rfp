@@ -10,8 +10,7 @@ export interface PeerEmitterStateMap {
   'transport.connected': void;
   'transport.disconnected': void;
   error: any;
-  block: PeerChunk<any>;
-  unblock: PeerChunk<any>;
+  // block: PeerChunk<any>;
   unblockAll: never;
 }
 
