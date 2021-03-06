@@ -1,6 +1,6 @@
 {
   "name": "@berish/rfp",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "Binary secure transport organization protocol for peer communication using function fingerprints",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
