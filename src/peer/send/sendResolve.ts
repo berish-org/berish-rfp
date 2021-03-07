@@ -1,4 +1,5 @@
 import { fillChunk, PeerChunk } from '../../chunk';
+import { SYMBOL_PEER_SCOPE } from '../../const';
 import { PeerDecoratorException } from '../../errors';
 import { Peer } from '../peer';
 import { sendRaw } from '../sendRaw';
@@ -16,7 +17,7 @@ export async function sendResolve(peer: Peer, outcomeData: any, incomeChunk: Pee
       notWaiting: true,
       path: incomeChunk.chunkId,
       status: 'resolve',
-      isForce: peer.hasBlockers && incomeChunk.isBlocker,
+      isForce: peer[SYMBOL_PEER_SCOPE].hasBlockers() && incomeChunk.isBlocker,
     });
 
     await sendRaw(peer, outcomeChunk, incomeChunk);

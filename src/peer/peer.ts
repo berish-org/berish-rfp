@@ -15,17 +15,20 @@ import { connect, disconnect } from './connection';
 import { ConnectionError } from '../errors';
 import { receive, unreceive, unreceiveAll } from './emit';
 import { sendInitial } from './send';
+import { SYMBOL_PEER_SCOPE } from '../const';
+import { PeerScope } from './peerScope';
 
 export interface PeerParams {
   name?: string;
   logger?: PeerLogger;
 }
 export class Peer {
+  public [SYMBOL_PEER_SCOPE] = new PeerScope(this);
+
   private _params: PeerParams = null;
   private _logger: PeerLogger = null;
 
   private _connection: PeerConnection<any> = null;
-  private _blockersChunks: PeerChunk<any>[] = null;
   private _serberInstance: typeof serberWithPlugins = null;
 
   private _serviceChannel: ServiceChannel = new ServiceChannel(this);
@@ -45,20 +48,6 @@ export class Peer {
 
   public get logger() {
     return this._logger;
-  }
-
-  public get blockersChunks() {
-    if (!this._blockersChunks) this._blockersChunks = [];
-
-    return this._blockersChunks;
-  }
-
-  public set blockersChunks(value: PeerChunk<any>[]) {
-    this._blockersChunks = value || [];
-  }
-
-  public get hasBlockers() {
-    return this.blockersChunks.length > 0;
   }
 
   public get serberInstance() {
@@ -126,6 +115,8 @@ export class Peer {
 
         this.logger.info('disconnect.start');
         await this.emitter.emitStateAsync('disconnect.start', null);
+
+        await this[SYMBOL_PEER_SCOPE].clear().catch();
 
         this.connection.transportDisconnect();
         this.connection = null;
