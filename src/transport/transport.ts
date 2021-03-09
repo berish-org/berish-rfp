@@ -1,4 +1,4 @@
-import { EventEmitter } from '@berish/emitter';
+import { CacheEmitter } from '@berish/emitter';
 
 import type { TransportPlugin } from './transportPlugin';
 import type { Peer } from '../peer';
@@ -33,7 +33,7 @@ export interface PeerTransportEventEmitterMap {
 export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTransportAdapter<any>> {
   private _transportAdapter: Adapter = null;
   private _plugins: TransportPlugin[] = null;
-  private _emitter: EventEmitter<PeerTransportEventEmitterMap> = null;
+  private _cacheEmitter: CacheEmitter = null;
   private _isConnected: boolean = false;
 
   constructor(transportAdapter: Adapter, plugins?: TransportPlugin[]) {
@@ -41,7 +41,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
 
     this._transportAdapter = transportAdapter;
     this._plugins = plugins || [];
-    this._emitter = new EventEmitter();
+    this._cacheEmitter = new CacheEmitter();
   }
 
   public get transportAdapter() {
@@ -75,7 +75,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
   }
 
   public subscribe(peer: Peer, callback: (data: PeerChunk<any>) => void) {
-    return this._emitter.cacheSubscribe<any>(
+    return this._cacheEmitter.subscribe<any>(
       'subscribe',
       (callback) => this.transportAdapter.subscribe(callback),
       async (data) => {
@@ -92,7 +92,7 @@ export class PeerTransport<Adapter extends PeerTransportAdapter<any> = PeerTrans
   }
 
   public unsubscribe(eventHash: string) {
-    return this._emitter.off(eventHash);
+    return this._cacheEmitter.unsubscribe(eventHash);
   }
 
   private async _beforeSend(peer: Peer, data: PeerChunk<any>) {
